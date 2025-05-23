@@ -13,9 +13,12 @@ href_id_1 = "MainBodyContent_AppSummaryControl1_fvAppSummary_hlnkInitialForm"
 href_id_2 = "MainBodyContent_AppSummaryControl1_fvAppSummary_hlnkAdditionalForm"
 initial_form_date_id = "MainBodyContent_AppSummaryControl1_fvAppSummary_DateFormSubmittedInitialLabel"
 additional_form_date_id = "MainBodyContent_AppSummaryControl1_fvAppSummary_DateFormSubmittedAdditionalLabel"
+current_status_id = "MainBodyContent_AppSummaryControl1_fvAppSummary_DRIStatusTextLabel"
 url = "https://apps.dca.ga.gov/DRI/Submissions.aspx"
-dataframe_list = []
-dataframe = {}
+project_data = pd.DataFrame(columns = ["DRI Number", "Project info", "Current Status", "Data Center?"])
+data_center_0 = "Data Center"
+data_center_1 = "Not Data Center"
+data_center_2 = "TBD"
 
 def main_rendered_html():
     driver = webdriver.Chrome()
@@ -73,25 +76,12 @@ def main_page():
     df = pd.DataFrame(data, columns = headers)
     #print("urls: ", final_urls)
     crawler(final_urls)
-    for i, df in enumerate(dataframe_list):
-        df["Field"] = df["Field"].apply(lambda x: " ".join(str(x).strip().split()))
-        #df["Field"] = df["Field"].str.replace(r"\s+", " ", regex=True).str.strip()
-        #df["Value"] = df["Value"].str.replace(r"\s+", " ", regex=True).str.strip()
-        df["Value"] = df["Value"].apply(lambda x: " ".join(str(x).strip().split()))
 
-        if i != 0 and i % 2 == 1:
-            df = df.drop(0)
-            empty_row = pd.DataFrame([["", ""]], columns=df.columns)
-            df = pd.concat([df, empty_row], ignore_index = True)
-        df["Value"] = df["Value"].astype(str)
-        df = df.reset_index(drop=True)
-        mode = 'w' if i == 0 else 'a'
-        #df.to_csv("dri_data.csv", mode='a', header=(i==0), index=False)
-        df.to_csv("dri_data.csv", mode= mode, header=(i==0), index=False)
-    #print(df)
-    
+    project_data.to_csv("dri_data.csv", index=False)
+
 def crawler(urls):
-    for details_url in urls[:3]:
+    for details_url in urls:
+        project_details = []
         website_header = "https://apps.dca.ga.gov/DRI/"
         application_detail = website_header + details_url
         #print("details url", details_url)
@@ -104,10 +94,11 @@ def crawler(urls):
         initial_form_date = soup.find("span", id = initial_form_date_id).text
         #initial_form_date = initial_form_date_exist
         if initial_form_date:
-            raw_data = fetch_initial_forms_data(initial_forms_url)
-            project_details = make_neat(raw_data)
+            dri_id = fetch_initial_forms_data(initial_forms_url, project_details)
+            clean_up(project_details)
+            #project_details = make_neat(raw_data)
             #print(project_details)
-            dataframe_list.append(project_details)
+            #dataframe_list.append(project_details)
         else:
             print("Initial form has not been filled out yet")
         
@@ -117,40 +108,50 @@ def crawler(urls):
         #print(additional_form_url)
         additional_form_date = soup.find("span", id = additional_form_date_id).text
         if additional_form_date:
-            raw_additional_details = fetch_additional_form_data(additional_form_url)
-            additional_details = make_neat(raw_additional_details)
+            fetch_additional_form_data(additional_form_url, project_details)
+            clean_up(project_details)
+            #raw_additional_details = fetch_additional_form_data(additional_form_url, project_details)
+            #additional_details = make_neat(raw_additional_details)
             #print(additional_details)
-            dataframe_list.append(additional_details)
+            #dataframe_list.append(additional_details)
         else:
             print("Additional form has not been filled out yet")
-            data = {"Field" : ["Additional form has not been filled out yet"], "Value" : ["Additional form has not been filled out yet"]}
-            temp_df = pd.DataFrame(data)
-            dataframe_list.append(temp_df)
+            project_details.append(["Additional form has not been filled out yet", "Additional form has not been filled out yet"])
+            #data = {"Field" : ["Additional form has not been filled out yet"], "Value" : ["Additional form has not been filled out yet"]}
+            #temp_df = pd.DataFrame(data)
+            #dataframe_list.append(temp_df)
             #temp_row = pd.DataFrame([["Additional form has not been filled out yet", "Additional form has not been filled out yet"]], columns=df.columns)
+        current_status = soup.find("span", id = current_status_id).text
+        project_details = [element for element in project_details if element != ['']]
+        project_details = [element for element in project_details if len(element) == 2]
+        project_data.loc[len(project_data)] = [dri_id, project_details, current_status, data_center_2]
 
-
-def fetch_initial_forms_data(initial_forms_url):
+def fetch_initial_forms_data(initial_forms_url, project_details):
     response = requests.get(initial_forms_url)
     if response.status_code == 200:
         soup2 = BeautifulSoup(response.text, "html.parser")
         rows = soup2.find_all("tr")
         subset = rows[18:22]
-        project_details = []
+        #project_details = []
         for row in subset:
             td = row.find_all("td")
             raw_data = [element.get_text(strip = True) for element in td]
             project_details.append(raw_data)
-        return project_details
+        #return project_details
+        first_span_tag = soup2.find("span").text
+        dri_id = first_span_tag.strip("DRI #")
+        return(dri_id)
+
     else:
         print("bad link")
 
-def fetch_additional_form_data(additional_form_url):
+def fetch_additional_form_data(additional_form_url, project_details):
     response = requests.get(additional_form_url)
     if response.status_code == 200:
         soup3 = BeautifulSoup(response.text, "html.parser")
         rows = soup3.find_all("tr")
         subset = rows[17:23] + rows[29:50]
-        project_details = []
+        #project_details = []
         for row in subset:
             td = row.find_all("td")
             radio_buttons = row.find_all('input', {'type': 'radio'})
@@ -181,7 +182,7 @@ def fetch_additional_form_data(additional_form_url):
             
             project_details.append(raw_data)
             #print(project_details)
-        return project_details
+        #return project_details
     else:
         print("bad link")
 
@@ -194,6 +195,10 @@ def make_neat(details):
             value = row[1].strip()
             project_info[label] = value
     return pd.DataFrame(list(project_info.items()), columns=["Field", "Value"])
+
+def clean_up(project_details):
+    for element in project_details:
+        element[0] = ' '.join(element[0].split())
 
     
 
