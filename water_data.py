@@ -7,6 +7,8 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from pathlib import Path
+from pandas.errors import EmptyDataError
 
 div_id = "__gvMainBodyContent_dvSubmissions__div"
 href_id_1 = "MainBodyContent_AppSummaryControl1_fvAppSummary_hlnkInitialForm"
@@ -16,6 +18,7 @@ additional_form_date_id = "MainBodyContent_AppSummaryControl1_fvAppSummary_DateF
 current_status_id = "MainBodyContent_AppSummaryControl1_fvAppSummary_DRIStatusTextLabel"
 url = "https://apps.dca.ga.gov/DRI/Submissions.aspx"
 project_data = pd.DataFrame(columns = ["DRI Number", "Project info", "Current Status", "Data Center?"])
+#project_data.set_index("DRI Number", inplace=True)
 data_center_0 = "Data Center"
 data_center_1 = "Not Data Center"
 data_center_2 = "TBD"
@@ -29,24 +32,17 @@ def main_rendered_html():
     driver.quit()
     return page
 
-def application_details_rendered_html(details_url):
-    driver = webdriver.Chrome()
+def application_details_rendered_html(details_url, driver):
     driver.get(details_url)
     WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.ID, href_id_1)))
     page = driver.page_source
-    driver.close()
-    driver.quit()
     return page
 
-def additional_form_rendered_html(details_url):
-    driver = webdriver.Chrome()
+def additional_form_rendered_html(details_url, driver):
     driver.get(details_url)
     WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.ID, href_id_2)))
     page = driver.page_source
-    driver.close()
-    driver.quit()
     return page
-
 
 def main_page():
     soup = BeautifulSoup(main_rendered_html(), "html.parser")
@@ -74,57 +70,97 @@ def main_page():
         data.append(row_data)
     
     df = pd.DataFrame(data, columns = headers)
+
+    #df.set_index("DRI ID", inplace = True)
+
     #print("urls: ", final_urls)
-    crawler(final_urls)
+    #dri_id_list = [element.strip("AppSummary.aspx?driid=") for element in final_urls]
+    #print(dri_id_list)
+    driver = webdriver.Chrome()
+    crawler(final_urls, df, driver)
+    driver.close()
+    driver.quit()
+    #project_data.to_csv("dri_data.csv", mode = 'a', index = True, header = False)
 
-    project_data.to_csv("dri_data.csv", index=False)
-
-def crawler(urls):
+def crawler(urls, dri_table, driver):
+    #print(dri_table["DRI ID"])
+    dri_table.set_index("DRI ID", inplace = True)
+    #print(dri_table.index.to_list())
+    dri_table.index = dri_table.index.astype(int)
+    #print(type(dri_table.index.to_list()[0]))
+    file_path = Path("dri_data.csv")
+    if file_path.exists() and file_path.is_file():
+        try:
+            water_data_df = pd.read_csv("dri_data.csv", index_col = "DRI Number")
+        except EmptyDataError:
+            print("CSV file exists but is empty. Initializing new DataFrame.")
+            water_data_df = pd.DataFrame(columns = ["DRI Number", "Project info", "Current Status", "Data Center?"], dtype = object)
+            water_data_df.set_index("DRI Number", inplace = True)
+    else:
+        print("No existing CSV file found, creating new one.")
+        file_path.touch()
+        water_data_df = pd.DataFrame(columns = ["DRI Number", "Project info", "Current Status", "Data Center?"], dtype = object)
+        water_data_df.set_index("DRI Number", inplace = True)
+    water_data_df.index = water_data_df.index.astype(int)
+    #print("water dataframe index", water_data_df.index.to_list())
+    #print(type(water_data_df.index[0]))
+    #print(type(dri_table.index.to_list()[0]) == type(water_data_df.index[0]))
     for details_url in urls:
-        project_details = []
-        website_header = "https://apps.dca.ga.gov/DRI/"
-        application_detail = website_header + details_url
-        #print("details url", details_url)
-        #print("new url: ", application_detail)
-        soup = BeautifulSoup(application_details_rendered_html(application_detail), "html.parser")
-        href1 = soup.find("a", id = href_id_1)
-        initial_forms_url = href1["href"]
-        initial_forms_url = website_header + initial_forms_url
-        #print("Initial forms url: ", initial_forms_url)
-        initial_form_date = soup.find("span", id = initial_form_date_id).text
-        #initial_form_date = initial_form_date_exist
-        if initial_form_date:
-            dri_id = fetch_initial_forms_data(initial_forms_url, project_details)
-            clean_up(project_details)
-            #project_details = make_neat(raw_data)
-            #print(project_details)
-            #dataframe_list.append(project_details)
-        else:
-            print("Initial form has not been filled out yet")
-        
-        href2 = soup.find("a", id = href_id_2)
-        additional_form_url = href2["href"]
-        additional_form_url = website_header + additional_form_url
-        #print(additional_form_url)
-        additional_form_date = soup.find("span", id = additional_form_date_id).text
-        if additional_form_date:
-            fetch_additional_form_data(additional_form_url, project_details)
-            clean_up(project_details)
-            #raw_additional_details = fetch_additional_form_data(additional_form_url, project_details)
-            #additional_details = make_neat(raw_additional_details)
-            #print(additional_details)
-            #dataframe_list.append(additional_details)
-        else:
-            print("Additional form has not been filled out yet")
-            project_details.append(["Additional form has not been filled out yet", "Additional form has not been filled out yet"])
-            #data = {"Field" : ["Additional form has not been filled out yet"], "Value" : ["Additional form has not been filled out yet"]}
-            #temp_df = pd.DataFrame(data)
-            #dataframe_list.append(temp_df)
-            #temp_row = pd.DataFrame([["Additional form has not been filled out yet", "Additional form has not been filled out yet"]], columns=df.columns)
-        current_status = soup.find("span", id = current_status_id).text
-        project_details = [element for element in project_details if element != ['']]
-        project_details = [element for element in project_details if len(element) == 2]
-        project_data.loc[len(project_data)] = [dri_id, project_details, current_status, data_center_2]
+        dri_number = int(details_url.strip("AppSummary.aspx?driid="))
+        #dri_number = int(dri_number)
+        #print(type(dri_number))
+        #row_index = water_data_df[water_data_df["DRI Number"] == details_url.strip("AppSummary.aspx?driid=")].index
+        if (dri_number not in water_data_df.index or dri_table.loc[dri_number, "Current Status"] != water_data_df.loc[dri_number, "Current Status"]):
+            project_details = []
+            website_header = "https://apps.dca.ga.gov/DRI/"
+            application_detail = website_header + details_url
+            #print("details url", details_url)
+            #print("new url: ", application_detail)
+            soup = BeautifulSoup(application_details_rendered_html(application_detail, driver), "html.parser")
+            href1 = soup.find("a", id = href_id_1)
+            initial_forms_url = href1["href"]
+            initial_forms_url = website_header + initial_forms_url
+            #print("Initial forms url: ", initial_forms_url)
+            initial_form_date = soup.find("span", id = initial_form_date_id).text
+            #initial_form_date = initial_form_date_exist
+            if initial_form_date:
+                dri_id = fetch_initial_forms_data(initial_forms_url, project_details)
+                clean_up(project_details)
+                #project_details = make_neat(raw_data)
+                #print(project_details)
+                #dataframe_list.append(project_details)
+            else:
+                print("Initial form has not been filled out yet")
+            
+            href2 = soup.find("a", id = href_id_2)
+            additional_form_url = href2["href"]
+            additional_form_url = website_header + additional_form_url
+            #print(additional_form_url)
+            additional_form_date = soup.find("span", id = additional_form_date_id).text
+            if additional_form_date:
+                fetch_additional_form_data(additional_form_url, project_details)
+                clean_up(project_details)
+                #raw_additional_details = fetch_additional_form_data(additional_form_url, project_details)
+                #additional_details = make_neat(raw_additional_details)
+                #print(additional_details)
+                #dataframe_list.append(additional_details)
+            else:
+                print("Additional form has not been filled out yet")
+                project_details.append(["Additional form has not been filled out yet", "Additional form has not been filled out yet"])
+                #data = {"Field" : ["Additional form has not been filled out yet"], "Value" : ["Additional form has not been filled out yet"]}
+                #temp_df = pd.DataFrame(data)
+                #dataframe_list.append(temp_df)
+                #temp_row = pd.DataFrame([["Additional form has not been filled out yet", "Additional form has not been filled out yet"]], columns=df.columns)
+            current_status = soup.find("span", id = current_status_id).text
+            project_details = [element for element in project_details if element != ['']]
+            project_details = [element for element in project_details if len(element) == 2]
+            #print("project details: ", project_details)
+            water_data_df.loc[dri_number] = [project_details, current_status, data_center_2]
+            #new_row = pd.DataFrame([[dri_id, project_details, current_status, data_center_2]], columns=["DRI Number", "Project info", "Current Status", "Data Center?"])
+            # append it without header:
+            #new_row.to_csv("dri_data.csv", mode = 'a', index = True, header = False)
+            #new_row.to_csv("dri_data.csv", mode = 'w', index = True)
+    water_data_df.to_csv("dri_data.csv", index = True)            
 
 def fetch_initial_forms_data(initial_forms_url, project_details):
     response = requests.get(initial_forms_url)
