@@ -2,7 +2,7 @@ name: Daily Script Runner
 
 on:
   schedule:
-    - cron: '55 15 * * *'  # Runs daily at 10 pm UTC, 6 pm EST
+    - cron: '56 14 * * *'  # Runs daily at 10 pm UTC, 6 pm EST
   workflow_dispatch:      # Allows manual trigger from GitHub UI
 
 jobs:
