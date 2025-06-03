@@ -1,1 +1,33 @@
+name: Weekly Snapshot of CSV
 
+on:
+  schedule:
+    - cron: '0 13 * * 1'  # Every Monday at 9 AM EST (13 UTC)
+  workflow_dispatch:
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12.7'
+
+    - name: Create snapshot with timestamp
+      run: |
+        mkdir -p snapshots
+        timestamp=$(date +"%Y-%m-%d")
+        cp master.csv "snapshots/master_$timestamp.csv"
+
+    - name: Commit snapshot
+      run: |
+        git config --global user.name "github-actions"
+        git config --global user.email "actions@github.com"
+        git add snapshots/
+        git commit -m "Weekly snapshot on $(date +'%Y-%m-%d')" || echo "No changes to commit"
+        git push
