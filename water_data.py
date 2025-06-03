@@ -174,6 +174,7 @@ def crawler(urls, dri_table, driver):
             # append it without header:
             #new_row.to_csv("dri_data.csv", mode = 'a', index = True, header = False)
             #new_row.to_csv("dri_data.csv", mode = 'w', index = True)
+    water_data_df.sort_index(inplace = True, ascending = False)
     water_data_df.to_csv("dri_data.csv", index = True)            
 
 def fetch_initial_forms_data(initial_forms_url, project_details):
