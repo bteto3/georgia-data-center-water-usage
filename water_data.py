@@ -7,8 +7,10 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.options import Options
 from pathlib import Path
 from pandas.errors import EmptyDataError
+import tempfile
 
 div_id = "__gvMainBodyContent_dvSubmissions__div"
 href_id_1 = "MainBodyContent_AppSummaryControl1_fvAppSummary_hlnkInitialForm"
@@ -44,6 +46,18 @@ def additional_form_rendered_html(details_url, driver):
     page = driver.page_source
     return page
 
+def get_driver():
+    options = Options()
+    options.add_argument("--headless")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    
+    # Use a unique, temporary user data directory
+    temp_dir = tempfile.mkdtemp()
+    options.add_argument(f"--user-data-dir={temp_dir}")
+
+    return webdriver.Chrome(options=options)
+
 def main_page():
     soup = BeautifulSoup(main_rendered_html(), "html.parser")
     div = soup.find("div", id= div_id)
@@ -76,7 +90,7 @@ def main_page():
     #print("urls: ", final_urls)
     #dri_id_list = [element.strip("AppSummary.aspx?driid=") for element in final_urls]
     #print(dri_id_list)
-    driver = webdriver.Chrome()
+    driver = get_driver()
     crawler(final_urls, df, driver)
     driver.close()
     driver.quit()
