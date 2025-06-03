@@ -26,7 +26,7 @@ data_center_1 = "Not Data Center"
 data_center_2 = "TBD"
 
 def main_rendered_html():
-    driver = webdriver.Chrome()
+    driver = get_driver()
     driver.get(url)
     WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.ID, div_id)))
     page = driver.page_source
