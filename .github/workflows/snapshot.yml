@@ -22,7 +22,7 @@ jobs:
       run: |
         mkdir -p snapshots
         timestamp=$(date +"%Y-%m-%d")
-        cp master.csv "snapshots/master_$timestamp.csv"
+        cp dri_data.csv "snapshots/dri_data_$timestamp.csv"
 
     - name: Commit snapshot
       run: |
