@@ -3,6 +3,7 @@ import numpy as np
 from pathlib import Path
 from pandas.errors import EmptyDataError
 import ast
+import re
 
 water_data_df = pd.read_csv("dri_data.csv", index_col = "DRI Number")
 dri_list = water_data_df.index.to_list()
@@ -24,6 +25,7 @@ else:
     data_center_df = pd.DataFrame(columns = ["Project Name", "Current Status", "Contains 'data center'?", "Water Usage", "Data Center?"], index = water_data_df.index)
     data_center_df.index = water_data_df.index
     data_center_df["Data Center?"] = water_data_df["Data Center?"]
+data_center_df.insert(4, 'Cleaned Water Usage Data', np.nan)
 data_center_df["Current Status"] = water_data_df["Current Status"]
 
 #'''
@@ -45,10 +47,30 @@ for dri in dri_list:
         else:
             data_center_df.loc[dri, "Contains 'data center'?"] = 0
         try:
-            data_center_df.loc[dri, "Water Usage"] = (project_info[13][1])
-        except IndexError:
-            data_center_df.loc[dri, "Water Usage"] = "No water data"
+            if 'n/a' in project_info[13][1].lower():
+                s = project_info[13][1].lower()
+                data_center_df.loc[dri, "Water Usage"] = "No water data"
+                data_center_df.loc[dri, "Cleaned Water Usage Data"] = "No water data"
+            elif 'mgd' in project_info[13][1].lower():
+                s = project_info[13][1].lower()
 
+                data_center_df.loc[dri, "Cleaned Water Usage Data"] = (re.split(r"\bmgd\b", s, flags = re.IGNORECASE)[0].strip())
+            elif 'mgpd' in project_info[13][1].lower():
+                s = project_info[13][1].lower()
+                data_center_df.loc[dri, "Cleaned Water Usage Data"] = (re.split(r"\bmgpd\b", s, flags = re.IGNORECASE)[0].strip())
+            else:
+                data_center_df.loc[dri, "Cleaned Water Usage Data"] = project_info[13][1].lower()
+                '''
+            if 'gpd' in project_info[13][1].lower():
+                s = project_info[13][1].lower()
+                data_center_df.loc[dri, "Water Usage"] = (re.split(r"\bgpd\b", s, flags = re.IGNORECASE)[0].strip())/1000000
+            elif 'gallons per day' in project_info[13][1].lower():
+                s = project_info[13][1].lower()
+                data_center_df.loc[dri, "Water Usage"] = (re.split(r"\bgallons per day\b", s, flags = re.IGNORECASE)[0].strip())
+                '''
+        except IndexError:
+            data_center_df.loc[dri, "Cleaned Water Usage Data"] = "No water data"
+                
 data_center_df.to_csv("data_center.csv", index = True)
 print(data_center_df)
 print(data_center_df["Contains 'data center'?"].sum())
