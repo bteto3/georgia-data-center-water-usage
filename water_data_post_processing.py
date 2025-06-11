@@ -7,11 +7,12 @@ import re
 
 #data_center_df = pd.DataFrame(columns = ["Current Status", "Contains 'data center'?", "Water Usage", "Data Center?"], index = water_data_df.index)
 def water_data_post_processing():
+    water_data_df = pd.read_csv("dri_data.csv", index_col = "DRI Number")
     file_path = Path("dri_post_processing.csv")
     if file_path.exists() and file_path.is_file():
         try:
             dri_post_processing_df = pd.read_csv("dri_post_processing.csv", index_col = "DRI Number")
-            dri_post_processing_df.index = water_data_df.index
+            #dri_post_processing_df.index = water_data_df.index
         except EmptyDataError:
             print("CSV file exists but is empty. Initializing new DataFrame.")
             dri_post_processing_df = pd.DataFrame(columns = ["Project Name", "Current Status", "Contains 'data center'?", "Water Usage", "Data Center?"], index = water_data_df.index)
@@ -27,8 +28,15 @@ def water_data_post_processing():
     dri_post_processing_df["Current Status"] = water_data_df["Current Status"]
 
     #'''
+    dri_list = water_data_df.index.to_list()
+    post_processing_dri_list = dri_post_processing_df.index.to_list()
+    
+    #dri_post_processing_df.index = water_data_df.index
+
     water_data_df["Project info"] = water_data_df["Project info"].apply(ast.literal_eval)
     for dri in dri_list:
+        if dri not in post_processing_dri_list:
+            dri_post_processing_df.loc[dri] = [np.nan, np.nan, np.nan, np.nan, np.nan, np.nan]
         #print(data_center_df.loc[dri, "Data Center?"])
         #print(data_center_df.loc[dri, "Data Center?"] == "TBD")
         if pd.isna(dri_post_processing_df.loc[dri, "Project Name"]):
@@ -116,11 +124,6 @@ def parse_water_usage(value):
         return float(value)
     except ValueError:
         return "No water data"
-
-# Apply the parser
-
-water_data_df = pd.read_csv("dri_data.csv", index_col = "DRI Number")
-dri_list = water_data_df.index.to_list()
 
 water_data_post_processing()
 

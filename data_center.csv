@@ -1,52 +1,52 @@
 DRI Number,Project Name,Current Status,Contains 'data center'?,Water Usage,Data Center?,Cleaned Water Usage Data
-4482,ATL 15 and 16,Initial Form Submitted,1,No water data,TBD,No water data
-4465,T5 ATL IV,DRI Determination Made,1,No water data,TBD,No water data
-4448,Project Gracie,Completed,1,5.0 at full buildout,TBD,5.0
-4443,White Oak Technology Park,Completed,1,6.598 mgd,TBD,6.598
-4433,Project Bunkhouse,Completed,1,No water data,TBD,No water data
-4428,Gregory Road Data Center,Completed,1,±1.08 mgd,TBD,1.08
-4426,Social Circle Technology Park,Completed,1,0.23 mgd,TBD,0.23
-4425,Project Spalding,Completed,1,0.0165,TBD,0.0165
-4422,Hickman Property,DRI Determination Made,1,No water data,TBD,No water data
-4414,Project West,Completed,1,0.1 mgd,TBD,0.1
-4403,Project Springbank,Completed,1,"0.015 (15,000 gpd)",TBD,0.015
-4376,Newton County Technology Park,Completed,1,0.23 mgd,TBD,0.23
-4374,Central Coweta Industrial Phase II,DRI Determination Made,1,0.028 mgd,TBD,0.028
-4361,Project Sail,Request for Comments Made,1,9.1,TBD,9.1
-4342,Stonewall Tell Data Center,Completed,1,0.030 mgd,TBD,0.03
-4334,Stream Data Center,Completed,1,0.018 mgd,TBD,0.018
-4329,Data Center - 0 Social Circle Parkway,Completed,1,0.02 mgd,TBD,0.02
-4326,Lithia Springs Data Center,Completed,1,0.062 mgd,TBD,0.062
-4325,Lithia Springs Data Center,Withdrawn,1,No water data,TBD,No water data
-4315,ATL03/Red Oak,Completed,1,0.6 mgd,TBD,0.6
-4308,Rumble Technology Campus,Completed,1,2 mgd,TBD,2.0
-4301,Project Peach,Completed,1,0.105 mgd,TBD,0.105
-4257,Vantage Data Center - Stacks Rd,Completed,1,0.03,TBD,0.03
-4256,Vantage Data Center - Westlake,Completed,1,".0044 mgd (4,380 gpd)",TBD,0.00438
-4251,Strickland Tract,Completed,1,0.004,TBD,0.004
-4235,ATL11,Completed,1,0.05 mgd,TBD,0.05
-4222,T5 Data Center,Withdrawn,1,No water data,TBD,No water data
-4213,Fairburn Technology Center,Completed,1,"60,000 gallons of water per day",TBD,0.06
-4198,0 Rocky Creek,Completed,1,0.004,TBD,0.004
-4192,Douglas Waldrop,Completed,1,0.01 mgd,TBD,0.01
-4171,Project Eisenhower,Completed,1,0.018mgd,TBD,0.018
-4147,Rockdale Technology Park 1,Completed,1,0.03 mgd,TBD,0.03
-4120,DC Blox - ATL East Data Center,Completed,1,"785 gpd (0.008 mgd, 0.55 gpm)",TBD,0.000785
-4112,DC Blox- ATL West Data Center,Completed,1,"17,640 gpd (.018 mgd)",TBD,0.01764
-4111,DC Blox- ATL West Data Center,Withdrawn,1,No water data,TBD,No water data
-4087,Lithia Springs Data Center,Completed,1,0.031 mgd,TBD,0.031
-4079,T5 - ATL IV Data Center,Completed,1,0.077 mgd,TBD,0.077
-4078,Rock House Road Data Center Site,Completed,1,1.14 mgd,TBD,1.14
-4061,Switch KEEP 2.0 Atlanta North Campus,Completed,1,1.3 mgd,TBD,1.3
-4051,Vantage Data Center,Completed,1,estimate water supply demand =  0.014 mgd,TBD,0.014
-3813,Project Excalibur,Completed,1,0.57 mgd,TBD,0.57
-3747,T5 - ATL III Data Center,Completed,1,0.042 mgd,TBD,0.042
-3576,Microsoft Data Center Palmetto,Completed,1,0.656 mgd (peak),TBD,0.656
-3463,Microsoft CCO06 Data Center,Terminated,1,No water data,TBD,No water data
-3298,Project Granite,Completed,1,0.43 mgd,TBD,0.43
-3160,Southeast Data Center campus,Completed,1,0.0175,TBD,0.0175
-2569,GA Tech High Performance Computing Center (GT HPCC),Completed,1,0.22,TBD,0.22
-2508,IDI2A,Terminated,1,No water data,TBD,No water data
-1967,Gainesville Business Park,Completed,1,"15,000 gallons per day",TBD,0.015
-1778,Hapeville Ford Plant Redevelopment,Completed,1,1.21 mgd,TBD,1.21
-783,1033 Jefferson Street,Completed,1,0.284 mgd,TBD,0.284
+4482,ATL 15 and 16,DRI Determination Made,1.0,No water data,TBD,No water data
+4465,T5 ATL IV,DRI Determination Made,1.0,No water data,TBD,No water data
+4448,Project Gracie,Completed,1.0,5.0 at full buildout,TBD,5.0
+4443,White Oak Technology Park,Completed,1.0,6.598 mgd,TBD,6.598
+4433,Project Bunkhouse,Completed,1.0,No water data,TBD,No water data
+4428,Gregory Road Data Center,Completed,1.0,±1.08 mgd,TBD,1.08
+4426,Social Circle Technology Park,Completed,1.0,0.23 mgd,TBD,0.23
+4425,Project Spalding,Completed,1.0,0.0165,TBD,0.0165
+4422,Hickman Property,DRI Determination Made,1.0,No water data,TBD,No water data
+4414,Project West,Completed,1.0,0.1 mgd,TBD,0.1
+4403,Project Springbank,Completed,1.0,"0.015 (15,000 gpd)",TBD,0.015
+4376,Newton County Technology Park,Completed,1.0,0.23 mgd,TBD,0.23
+4374,Central Coweta Industrial Phase II,DRI Determination Made,1.0,0.028 mgd,TBD,0.028
+4361,Project Sail,Completed,1.0,9.1,TBD,9.1
+4342,Stonewall Tell Data Center,Completed,1.0,0.030 mgd,TBD,0.03
+4334,Stream Data Center,Completed,1.0,0.018 mgd,TBD,0.018
+4329,Data Center - 0 Social Circle Parkway,Completed,1.0,0.02 mgd,TBD,0.02
+4326,Lithia Springs Data Center,Completed,1.0,0.062 mgd,TBD,0.062
+4325,Lithia Springs Data Center,Withdrawn,1.0,No water data,TBD,No water data
+4315,ATL03/Red Oak,Completed,1.0,0.6 mgd,TBD,0.6
+4308,Rumble Technology Campus,Completed,1.0,2 mgd,TBD,2.0
+4301,Project Peach,Completed,1.0,0.105 mgd,TBD,0.105
+4257,Vantage Data Center - Stacks Rd,Completed,1.0,0.03,TBD,0.03
+4256,Vantage Data Center - Westlake,Completed,1.0,".0044 mgd (4,380 gpd)",TBD,0.00438
+4251,Strickland Tract,Completed,1.0,0.004,TBD,0.004
+4235,ATL11,Completed,1.0,0.05 mgd,TBD,0.05
+4222,T5 Data Center,Withdrawn,1.0,No water data,TBD,No water data
+4213,Fairburn Technology Center,Completed,1.0,"60,000 gallons of water per day",TBD,0.06
+4198,0 Rocky Creek,Completed,1.0,0.004,TBD,0.004
+4192,Douglas Waldrop,Completed,1.0,0.01 mgd,TBD,0.01
+4171,Project Eisenhower,Completed,1.0,0.018mgd,TBD,0.018
+4147,Rockdale Technology Park 1,Completed,1.0,0.03 mgd,TBD,0.03
+4120,DC Blox - ATL East Data Center,Completed,1.0,"785 gpd (0.008 mgd, 0.55 gpm)",TBD,0.000785
+4112,DC Blox- ATL West Data Center,Completed,1.0,"17,640 gpd (.018 mgd)",TBD,0.01764
+4111,DC Blox- ATL West Data Center,Withdrawn,1.0,No water data,TBD,No water data
+4087,Lithia Springs Data Center,Completed,1.0,0.031 mgd,TBD,0.031
+4079,T5 - ATL IV Data Center,Completed,1.0,0.077 mgd,TBD,0.077
+4078,Rock House Road Data Center Site,Completed,1.0,1.14 mgd,TBD,1.14
+4061,Switch KEEP 2.0 Atlanta North Campus,Completed,1.0,1.3 mgd,TBD,1.3
+4051,Vantage Data Center,Completed,1.0,estimate water supply demand =  0.014 mgd,TBD,0.014
+3813,Project Excalibur,Completed,1.0,0.57 mgd,TBD,0.57
+3747,T5 - ATL III Data Center,Completed,1.0,0.042 mgd,TBD,0.042
+3576,Microsoft Data Center Palmetto,Completed,1.0,0.656 mgd (peak),TBD,0.656
+3463,Microsoft CCO06 Data Center,Terminated,1.0,No water data,TBD,No water data
+3298,Project Granite,Completed,1.0,0.43 mgd,TBD,0.43
+3160,Southeast Data Center campus,Completed,1.0,0.0175,TBD,0.0175
+2569,GA Tech High Performance Computing Center (GT HPCC),Completed,1.0,0.22,TBD,0.22
+2508,IDI2A,Terminated,1.0,No water data,TBD,No water data
+1967,Gainesville Business Park,Completed,1.0,"15,000 gallons per day",TBD,0.015
+1778,Hapeville Ford Plant Redevelopment,Completed,1.0,1.21 mgd,TBD,1.21
+783,1033 Jefferson Street,Completed,1.0,0.284 mgd,TBD,0.284
