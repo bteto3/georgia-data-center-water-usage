@@ -1,4 +1,4 @@
-# Georgia data center water usage
+# Water usage by data centers in Georgia
 
 * Collecting and organzing data regarding water usage by data centers in the state of Georgia by scraping data from the DRI submissions webpage
   - https://apps.dca.ga.gov/DRI/Submissions.aspx
