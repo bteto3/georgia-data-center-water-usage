@@ -7,11 +7,14 @@ import re
 
 #data_center_df = pd.DataFrame(columns = ["Current Status", "Contains 'data center'?", "Water Usage", "Data Center?"], index = water_data_df.index)
 def water_data_post_processing():
-    water_data_df = pd.read_csv("../Data/dri_data.csv", index_col = "DRI Number")
-    file_path = Path("../Data/dri_post_processing.csv")
-    if file_path.exists() and file_path.is_file():
+    script_dir = Path(__file__).resolve().parent
+    dri_data_path = script_dir.parent / "Data" / "dri_data.csv"
+    dri_post_processing_path = script_dir.parent / "Data" / "dri_post_processing.csv"
+    water_data_df = pd.read_csv(dri_data_path, index_col = "DRI Number")
+    #file_path = Path("../Data/dri_post_processing.csv")
+    if dri_post_processing_path.exists() and dri_post_processing_path.is_file():
         try:
-            dri_post_processing_df = pd.read_csv("../Data/dri_post_processing.csv", index_col = "DRI Number")
+            dri_post_processing_df = pd.read_csv(dri_post_processing_path, index_col = "DRI Number")
             #dri_post_processing_df.index = water_data_df.index
         except EmptyDataError:
             print("CSV file exists but is empty. Initializing new DataFrame.")
@@ -78,8 +81,8 @@ def water_data_post_processing():
             except IndexError:
                 dri_post_processing_df.loc[dri, "Water Usage"] = "No water data"
                 dri_post_processing_df.loc[dri, "Cleaned Water Usage Data"] = "No water data"
-                    
-    dri_post_processing_df.to_csv("../Data/dri_post_processing.csv", index = True)
+    dri_post_processing_output_path = dri_post_processing_path.parent / "dri_post_processing.csv"
+    dri_post_processing_df.to_csv(dri_post_processing_output_path, index = True)
     #print(dri_post_processing_df)
     print(dri_post_processing_df["Contains 'data center'?"].sum())
 
@@ -127,12 +130,16 @@ def parse_water_usage(value):
 
 water_data_post_processing()
 
-dri_post_processing_df = pd.read_csv("../Data/dri_post_processing.csv", index_col = "DRI Number")
+#dri_post_processing_df = pd.read_csv("../Data/dri_post_processing.csv", index_col = "DRI Number")
+script_dir = Path(__file__).resolve().parent
+dri_post_processing_path = script_dir.parent / "Data" / "dri_post_processing.csv"
+dri_post_processing_df = pd.read_csv(dri_post_processing_path, index_col = "DRI Number")
 data_center_df = dri_post_processing_df[dri_post_processing_df["Contains 'data center'?"] == 1]
 
 data_center_df['Cleaned Water Usage Data'] = data_center_df['Water Usage'].apply(parse_water_usage)
 
 print(data_center_df)
-data_center_df.to_csv("../Data/data_center.csv", index = True)
+data_center_output_path = dri_post_processing_path.parent / "data_center.csv"
+data_center_df.to_csv(data_center_output_path, index = True)
 
 
