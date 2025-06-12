@@ -102,10 +102,10 @@ def crawler(urls, dri_table, driver):
     #print(dri_table.index.to_list())
     dri_table.index = dri_table.index.astype(int)
     #print(type(dri_table.index.to_list()[0]))
-    file_path = Path("dri_data.csv")
+    file_path = Path("../Data/dri_data.csv")
     if file_path.exists() and file_path.is_file():
         try:
-            water_data_df = pd.read_csv("dri_data.csv", index_col = "DRI Number")
+            water_data_df = pd.read_csv("../Data/dri_data.csv", index_col = "DRI Number")
         except EmptyDataError:
             print("CSV file exists but is empty. Initializing new DataFrame.")
             water_data_df = pd.DataFrame(columns = ["DRI Number", "Project info", "Current Status", "Data Center?"], dtype = object)
@@ -175,7 +175,7 @@ def crawler(urls, dri_table, driver):
             #new_row.to_csv("dri_data.csv", mode = 'a', index = True, header = False)
             #new_row.to_csv("dri_data.csv", mode = 'w', index = True)
     water_data_df.sort_index(inplace = True, ascending = False)
-    water_data_df.to_csv("dri_data.csv", index = True)            
+    water_data_df.to_csv("../Data/dri_data.csv", index = True)            
 
 def fetch_initial_forms_data(initial_forms_url, project_details):
     response = requests.get(initial_forms_url)
