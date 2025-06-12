@@ -24,7 +24,7 @@ def water_data_post_processing():
             #data_center_df.set_index("DRI Number", inplace = True)
     else:
         print("No existing CSV file found, creating new one.")
-        file_path.touch()
+        dri_post_processing_path.touch()
         dri_post_processing_df = pd.DataFrame(columns = ["Project Name", "Current Status", "Contains 'data center'?", "Water Usage", "Data Center?"], index = water_data_df.index)
         dri_post_processing_df.index = water_data_df.index
         dri_post_processing_df["Data Center?"] = water_data_df["Data Center?"]
