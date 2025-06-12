@@ -25,5 +25,5 @@ jobs:
 
     - name: Run script
       run: |
-        Scripts/python water_data.py
-        Scripts/python water_data_post_processing.py
+        Python Scripts/water_data.py
+        Python Scripts/water_data_post_processing.py
