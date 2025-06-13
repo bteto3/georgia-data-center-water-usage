@@ -159,6 +159,12 @@ def parse_water_usage(value):
     except ValueError:
         return "No water data"
 
+def calculate_water_consumption(row):
+    try:
+        return float(row["Cleaned Water Usage Data"]) - float(row["Cleaned Water Discharge Data"])
+    except ValueError or TypeError:
+        return "No water data"
+
 dri_post_processing_df = water_data_post_processing()
 
 #dri_post_processing_df = pd.read_csv("../Data/dri_post_processing.csv", index_col = "DRI Number")
@@ -169,8 +175,9 @@ data_center_df = dri_post_processing_df[dri_post_processing_df["Contains 'data c
 
 data_center_df.loc[:, 'Cleaned Water Usage Data'] = data_center_df['Water Usage'].apply(parse_water_usage)
 data_center_df.loc[:, 'Cleaned Water Discharge Data'] = data_center_df['Water Discharge Data'].apply(parse_water_usage)
-print(data_center_df.columns)
-data_center_df = data_center_df[["Water Usage", "Cleaned Water Usage Data", "Water Discharge Data", "Cleaned Water Discharge Data", "Contains 'data center'?", "Project Name", "Current Status", "Data Center?"]]
+data_center_df["Water Consumption/Loss"] = data_center_df.apply(calculate_water_consumption, axis = 1)
+data_center_df["Water Consumption/Loss"] = data_center_df["Water Consumption/Loss"].round(5)
+data_center_df = data_center_df[["Water Consumption/Loss", "Water Usage", "Cleaned Water Usage Data", "Water Discharge Data", "Cleaned Water Discharge Data", "Contains 'data center'?", "Project Name", "Current Status", "Data Center?"]]
 print(data_center_df)
 data_center_output_path = dri_post_processing_path.parent / "data_center.csv"
 data_center_df.to_csv(data_center_output_path, index = True)
