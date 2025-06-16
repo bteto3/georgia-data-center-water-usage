@@ -4,8 +4,8 @@ from pathlib import Path
 from pandas.errors import EmptyDataError
 import ast
 import re
-from geopy.geocoders import Nominatim
-from geopy.extra.rate_limiter import RateLimiter
+#from geopy.geocoders import Nominatim
+#from geopy.extra.rate_limiter import RateLimiter
 
 #data_center_df = pd.DataFrame(columns = ["Current Status", "Contains 'data center'?", "Water Usage", "Data Center?"], index = water_data_df.index)
 def water_data_post_processing():
