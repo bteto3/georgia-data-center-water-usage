@@ -4,6 +4,8 @@ from pathlib import Path
 from pandas.errors import EmptyDataError
 import ast
 import re
+from geopy.geocoders import Nominatim
+from geopy.extra.rate_limiter import RateLimiter
 
 #data_center_df = pd.DataFrame(columns = ["Current Status", "Contains 'data center'?", "Water Usage", "Data Center?"], index = water_data_df.index)
 def water_data_post_processing():
@@ -109,9 +111,14 @@ def water_data_post_processing():
             except IndexError:
                 dri_post_processing_df.loc[dri, "Water Discharge Data"] = "No water data"
                 dri_post_processing_df.loc[dri, "Cleaned Water Discharge Data"] = "No water data"
+            
+            try:
+                dri_post_processing_df.loc[dri, "Location Data"] = project_info[1][1]
+            except IndexError or ValueError:
+                dri_post_processing_df.loc[dri, "Location Data"] = "No Location Data"
     #dri_post_processing_df['Cleaned Water Usage Data'] = dri_post_processing_df['Water Usage'].apply(parse_water_usage)
     dri_post_processing_output_path = dri_post_processing_path.parent / "dri_post_processing.csv"
-    dri_post_processing_df = dri_post_processing_df[["Water Usage", "Cleaned Water Usage Data", "Water Discharge Data", "Cleaned Water Discharge Data", "Contains 'data center'?", "Project Name", "Current Status", "Data Center?"]]
+    dri_post_processing_df = dri_post_processing_df[["Water Usage", "Cleaned Water Usage Data", "Water Discharge Data", "Cleaned Water Discharge Data", "Contains 'data center'?", "Project Name", "Location Data", "Current Status", "Data Center?"]]
     dri_post_processing_df.to_csv(dri_post_processing_output_path, index = True)
     #print(dri_post_processing_df)
     print(dri_post_processing_df["Contains 'data center'?"].sum())
@@ -164,22 +171,43 @@ def calculate_water_consumption(row):
         return float(row["Cleaned Water Usage Data"]) - float(row["Cleaned Water Discharge Data"])
     except ValueError or TypeError:
         return "No water data"
+'''
+def gps_coordinates(df):
+    geolocator = Nominatim(user_agent="my_geocoder", timeout = 10)
 
-dri_post_processing_df = water_data_post_processing()
+    # To avoid hitting usage limits, add a delay between calls
+    geocode = RateLimiter(geolocator.geocode, min_delay_seconds = 1)
 
-#dri_post_processing_df = pd.read_csv("../Data/dri_post_processing.csv", index_col = "DRI Number")
-script_dir = Path(__file__).resolve().parent
-dri_post_processing_path = script_dir.parent / "Data" / "dri_post_processing.csv"
-#dri_post_processing_df = pd.read_csv(dri_post_processing_path, index_col = "DRI Number")
-data_center_df = dri_post_processing_df[dri_post_processing_df["Contains 'data center'?"] == 1]
+    # Assuming your CSV has a column 'address' or 'location'
+    #df['location'] = df['address']  # Change 'address' to your actual column name
 
-data_center_df.loc[:, 'Cleaned Water Usage Data'] = data_center_df['Water Usage'].apply(parse_water_usage)
-data_center_df.loc[:, 'Cleaned Water Discharge Data'] = data_center_df['Water Discharge Data'].apply(parse_water_usage)
-data_center_df["Water Consumption/Loss"] = data_center_df.apply(calculate_water_consumption, axis = 1)
-data_center_df["Water Consumption/Loss"] = data_center_df["Water Consumption/Loss"].round(5)
-data_center_df = data_center_df[["Water Consumption/Loss", "Water Usage", "Cleaned Water Usage Data", "Water Discharge Data", "Cleaned Water Discharge Data", "Contains 'data center'?", "Project Name", "Current Status", "Data Center?"]]
-print(data_center_df)
-data_center_output_path = dri_post_processing_path.parent / "data_center.csv"
-data_center_df.to_csv(data_center_output_path, index = True)
+    # Apply geocoding
+    df.loc[:, 'GPS Coordinates'] = df['Location Data'].apply(geocode)
 
+    # Extract latitude and longitude from the location object
+    #df['latitude'] = df['location'].apply(lambda loc: loc.latitude if loc else None)
+    #df['longitude'] = df['location'].apply(lambda loc: loc.longitude if loc else None)
 
+    #print(df[['address', 'latitude', 'longitude']])
+'''
+def main():
+    dri_post_processing_df = water_data_post_processing()
+
+    #dri_post_processing_df = pd.read_csv("../Data/dri_post_processing.csv", index_col = "DRI Number")
+    script_dir = Path(__file__).resolve().parent
+    dri_post_processing_path = script_dir.parent / "Data" / "dri_post_processing.csv"
+    #dri_post_processing_df = pd.read_csv(dri_post_processing_path, index_col = "DRI Number")
+    data_center_df = dri_post_processing_df[dri_post_processing_df["Contains 'data center'?"] == 1]
+
+    data_center_df.loc[:, 'Cleaned Water Usage Data'] = data_center_df['Water Usage'].apply(parse_water_usage)
+    data_center_df.loc[:, 'Cleaned Water Discharge Data'] = data_center_df['Water Discharge Data'].apply(parse_water_usage)
+    data_center_df.loc[:, "Water Consumption/Loss"] = data_center_df.apply(calculate_water_consumption, axis = 1)
+    #data_center_df["Water Consumption/Loss"] = data_center_df["Water Consumption/Loss"].round(5)
+    #gps_coordinates(data_center_df)
+    data_center_df = data_center_df[["Water Consumption/Loss", "Project Name", "Cleaned Water Usage Data", "Cleaned Water Discharge Data", "Water Usage", "Water Discharge Data","Contains 'data center'?", "Current Status", "Data Center?"]]
+
+    print(data_center_df)
+    data_center_output_path = dri_post_processing_path.parent / "data_center.csv"
+    data_center_df.to_csv(data_center_output_path, index = True)
+
+main()
