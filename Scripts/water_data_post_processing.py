@@ -35,13 +35,13 @@ def water_data_post_processing():
     #'''
     dri_list = water_data_df.index.to_list()
     post_processing_dri_list = dri_post_processing_df.index.to_list()
-    
+    dri_post_processing_df = dri_post_processing_df[["Water Usage", "Project Name", "Cleaned Water Usage Data", "Water Discharge Data", "Cleaned Water Discharge Data", "Contains 'data center'?", "Current Status", "Data Center?"]]
     #dri_post_processing_df.index = water_data_df.index
 
     water_data_df["Project info"] = water_data_df["Project info"].apply(ast.literal_eval)
     for dri in dri_list:
         if dri not in post_processing_dri_list:
-            dri_post_processing_df.loc[dri] = [np.nan, np.nan, np.nan, np.nan, np.nan, np.nan]
+            dri_post_processing_df.loc[dri] = [np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan]
         #print(data_center_df.loc[dri, "Data Center?"])
         #print(data_center_df.loc[dri, "Data Center?"] == "TBD")
         if pd.isna(dri_post_processing_df.loc[dri, "Project Name"]):
@@ -118,7 +118,7 @@ def water_data_post_processing():
                 dri_post_processing_df.loc[dri, "Location Data"] = "No Location Data"
     #dri_post_processing_df['Cleaned Water Usage Data'] = dri_post_processing_df['Water Usage'].apply(parse_water_usage)
     dri_post_processing_output_path = dri_post_processing_path.parent / "dri_post_processing.csv"
-    dri_post_processing_df = dri_post_processing_df[["Water Usage", "Cleaned Water Usage Data", "Water Discharge Data", "Cleaned Water Discharge Data", "Contains 'data center'?", "Project Name", "Location Data", "Current Status", "Data Center?"]]
+    dri_post_processing_df = dri_post_processing_df[["Project Name", "Water Usage", "Cleaned Water Usage Data", "Water Discharge Data", "Cleaned Water Discharge Data", "Contains 'data center'?", "Current Status", "Data Center?"]]
     dri_post_processing_df.to_csv(dri_post_processing_output_path, index = True)
     #print(dri_post_processing_df)
     print(dri_post_processing_df["Contains 'data center'?"].sum())
