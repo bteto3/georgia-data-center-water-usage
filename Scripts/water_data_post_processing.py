@@ -168,25 +168,12 @@ def calculate_water_consumption(row):
         return float(row["Cleaned Water Usage Data"]) - float(row["Cleaned Water Discharge Data"])
     except ValueError or TypeError:
         return "No water data"
-'''
-def gps_coordinates(df):
-    geolocator = Nominatim(user_agent="my_geocoder", timeout = 10)
-
-    # To avoid hitting usage limits, add a delay between calls
-    geocode = RateLimiter(geolocator.geocode, min_delay_seconds = 1)
-
-    # Assuming your CSV has a column 'address' or 'location'
-    #df['location'] = df['address']  # Change 'address' to your actual column name
-
-    # Apply geocoding
-    df.loc[:, 'GPS Coordinates'] = df['Location Data'].apply(geocode)
-
-    # Extract latitude and longitude from the location object
-    #df['latitude'] = df['location'].apply(lambda loc: loc.latitude if loc else None)
-    #df['longitude'] = df['location'].apply(lambda loc: loc.longitude if loc else None)
-
-    #print(df[['address', 'latitude', 'longitude']])
-'''
+def clean_entries(df):
+    terminated_names = df.loc[df['Current Status'].str.lower() == 'terminated', 'Project Name'].unique()
+    df = df[~df['Project Name'].isin(terminated_names)]
+    withdrawn_names = df.loc[df['Current Status'].str.lower() == 'withdrawn', 'Project Name'].unique()
+    df = df[~df['Project Name'].isin(withdrawn_names)]
+    return df
 def main():
     dri_post_processing_df = water_data_post_processing()
 
@@ -202,7 +189,7 @@ def main():
     #data_center_df["Water Consumption/Loss"] = data_center_df["Water Consumption/Loss"].round(5)
     #gps_coordinates(data_center_df)
     data_center_df = data_center_df[["Water Consumption/Loss", "Project Name", "County", "Cleaned Water Usage Data", "Cleaned Water Discharge Data", "Water Usage", "Water Discharge Data","Contains 'data center'?", "Current Status", "Data Center?"]]
-
+    data_center_df = clean_entries(data_center_df)
     print(data_center_df)
     data_center_output_path = dri_post_processing_path.parent / "data_center.csv"
     data_center_df.to_csv(data_center_output_path, index = True)
