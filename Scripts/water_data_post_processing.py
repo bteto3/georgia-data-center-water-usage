@@ -20,14 +20,14 @@ def water_data_post_processing():
             #dri_post_processing_df.index = water_data_df.index
         except EmptyDataError:
             print("CSV file exists but is empty. Initializing new DataFrame.")
-            dri_post_processing_df = pd.DataFrame(columns = ["Project Name", "Current Status", "Contains 'data center'?", "Water Usage", "Data Center?"], index = water_data_df.index)
+            dri_post_processing_df = pd.DataFrame(columns = ["Water Usage", "Project Name", "County", "Cleaned Water Usage Data", "Water Discharge Data", "Cleaned Water Discharge Data", "Contains 'data center'?", "Current Status", "Data Center?"], index = water_data_df.index)
             dri_post_processing_df.index = water_data_df.index
             dri_post_processing_df["Data Center?"] = water_data_df["Data Center?"]
             #data_center_df.set_index("DRI Number", inplace = True)
     else:
         print("No existing CSV file found, creating new one.")
         dri_post_processing_path.touch()
-        dri_post_processing_df = pd.DataFrame(columns = ["Project Name", "Current Status", "Contains 'data center'?", "Water Usage", "Data Center?"], index = water_data_df.index)
+        dri_post_processing_df = pd.DataFrame(columns = ["Water Usage", "Project Name", "County", "Cleaned Water Usage Data", "Water Discharge Data", "Cleaned Water Discharge Data", "Contains 'data center'?", "Current Status", "Data Center?"], index = water_data_df.index)
         dri_post_processing_df.index = water_data_df.index
         dri_post_processing_df["Data Center?"] = water_data_df["Data Center?"]
     dri_post_processing_df["Current Status"] = water_data_df["Current Status"]
@@ -35,13 +35,13 @@ def water_data_post_processing():
     #'''
     dri_list = water_data_df.index.to_list()
     post_processing_dri_list = dri_post_processing_df.index.to_list()
-    dri_post_processing_df = dri_post_processing_df[["Water Usage", "Project Name", "Cleaned Water Usage Data", "Water Discharge Data", "Cleaned Water Discharge Data", "Contains 'data center'?", "Current Status", "Data Center?"]]
+    dri_post_processing_df = dri_post_processing_df[["Water Usage", "Project Name", "County", "Cleaned Water Usage Data", "Water Discharge Data", "Cleaned Water Discharge Data", "Contains 'data center'?", "Current Status", "Data Center?"]]
     #dri_post_processing_df.index = water_data_df.index
 
     water_data_df["Project info"] = water_data_df["Project info"].apply(ast.literal_eval)
     for dri in dri_list:
         if dri not in post_processing_dri_list:
-            dri_post_processing_df.loc[dri] = [np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan]
+            dri_post_processing_df.loc[dri] = [np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan]
         #print(data_center_df.loc[dri, "Data Center?"])
         #print(data_center_df.loc[dri, "Data Center?"] == "TBD")
         if pd.isna(dri_post_processing_df.loc[dri, "Project Name"]):
@@ -112,13 +112,10 @@ def water_data_post_processing():
                 dri_post_processing_df.loc[dri, "Water Discharge Data"] = "No water data"
                 dri_post_processing_df.loc[dri, "Cleaned Water Discharge Data"] = "No water data"
             
-            try:
-                dri_post_processing_df.loc[dri, "Location Data"] = project_info[1][1]
-            except IndexError or ValueError:
-                dri_post_processing_df.loc[dri, "Location Data"] = "No Location Data"
+            dri_post_processing_df.loc[dri, "County"] = water_data_df.loc[dri, "County"]
     #dri_post_processing_df['Cleaned Water Usage Data'] = dri_post_processing_df['Water Usage'].apply(parse_water_usage)
     dri_post_processing_output_path = dri_post_processing_path.parent / "dri_post_processing.csv"
-    dri_post_processing_df = dri_post_processing_df[["Project Name", "Water Usage", "Cleaned Water Usage Data", "Water Discharge Data", "Cleaned Water Discharge Data", "Contains 'data center'?", "Current Status", "Data Center?"]]
+    dri_post_processing_df = dri_post_processing_df[["Project Name", "Water Usage", "County", "Cleaned Water Usage Data", "Water Discharge Data", "Cleaned Water Discharge Data", "Contains 'data center'?", "Current Status", "Data Center?"]]
     dri_post_processing_df.to_csv(dri_post_processing_output_path, index = True)
     #print(dri_post_processing_df)
     print(dri_post_processing_df["Contains 'data center'?"].sum())
@@ -204,7 +201,7 @@ def main():
     data_center_df.loc[:, "Water Consumption/Loss"] = data_center_df.apply(calculate_water_consumption, axis = 1)
     #data_center_df["Water Consumption/Loss"] = data_center_df["Water Consumption/Loss"].round(5)
     #gps_coordinates(data_center_df)
-    data_center_df = data_center_df[["Water Consumption/Loss", "Project Name", "Cleaned Water Usage Data", "Cleaned Water Discharge Data", "Water Usage", "Water Discharge Data","Contains 'data center'?", "Current Status", "Data Center?"]]
+    data_center_df = data_center_df[["Water Consumption/Loss", "Project Name", "County", "Cleaned Water Usage Data", "Cleaned Water Discharge Data", "Water Usage", "Water Discharge Data","Contains 'data center'?", "Current Status", "Data Center?"]]
 
     print(data_center_df)
     data_center_output_path = dri_post_processing_path.parent / "data_center.csv"
