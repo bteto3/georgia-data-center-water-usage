@@ -19,7 +19,7 @@ initial_form_date_id = "MainBodyContent_AppSummaryControl1_fvAppSummary_DateForm
 additional_form_date_id = "MainBodyContent_AppSummaryControl1_fvAppSummary_DateFormSubmittedAdditionalLabel"
 current_status_id = "MainBodyContent_AppSummaryControl1_fvAppSummary_DRIStatusTextLabel"
 url = "https://apps.dca.ga.gov/DRI/Submissions.aspx"
-project_data = pd.DataFrame(columns = ["DRI Number", "Project info", "County", "Current Status", "Data Center?"])
+project_data = pd.DataFrame(columns = ["DRI Number", "Project info", "County", "Initial Info Form Submision Date", "Current Status", "Data Center?"])
 #project_data.set_index("DRI Number", inplace=True)
 data_center_0 = "Data Center"
 data_center_1 = "Not Data Center"
@@ -110,12 +110,12 @@ def crawler(urls, dri_table, driver):
             water_data_df = pd.read_csv(dri_data_path, index_col = "DRI Number")
         except EmptyDataError:
             print("CSV file exists but is empty. Initializing new DataFrame.")
-            water_data_df = pd.DataFrame(columns = ["DRI Number", "Project info", "County", "Current Status", "Data Center?"], dtype = object)
+            water_data_df = pd.DataFrame(columns = ["DRI Number", "Project info", "County", "Initial Info Form Submision Date", "Current Status", "Data Center?"], dtype = object)
             water_data_df.set_index("DRI Number", inplace = True)
     else:
         print("No existing CSV file found, creating new one.")
         dri_data_path.touch()
-        water_data_df = pd.DataFrame(columns = ["DRI Number", "Project info", "County", "Current Status", "Data Center?"], dtype = object)
+        water_data_df = pd.DataFrame(columns = ["DRI Number", "Project info", "County", "Initial Info Form Submision Date", "Current Status", "Data Center?"], dtype = object)
         water_data_df.set_index("DRI Number", inplace = True)
     water_data_df.index = water_data_df.index.astype(int)
     #print("water dataframe index", water_data_df.index.to_list())
@@ -169,6 +169,7 @@ def crawler(urls, dri_table, driver):
                 #temp_row = pd.DataFrame([["Additional form has not been filled out yet", "Additional form has not been filled out yet"]], columns=df.columns)
             current_status = soup.find("span", id = current_status_id).text
             county = dri_table.loc[dri_number, "County"]
+            date = dri_table.loc[dri_number, "Initial Info Form Submitted"]
             project_details = [element for element in project_details if element != ['']]
             project_details = [element for element in project_details if len(element) == 2]
             #print("project details: ", project_details)
@@ -176,6 +177,7 @@ def crawler(urls, dri_table, driver):
             water_data_df.loc[dri_number] = pd.Series({
                 "Project info": project_details,
                 "County": county,
+                "Initial Info Form Submision Date": date,
                 "Current Status": current_status,
                 "Data Center?": data_center_2
             })
