@@ -79,7 +79,7 @@ def map_visualization():
     full_path = os.path.join(folder, filename)
     #fig.write_image(full_path)
     fig.write_image(full_path, width=1200, height=900, scale=2)
-    fig.write_html(os.path.join(folder, "scatter_plot.html"))
+    fig.write_html(os.path.join(folder, "data_center_water_data_county_map.html"))
 
     '''
     county_group = df.groupby("County", as_index=False).agg({
