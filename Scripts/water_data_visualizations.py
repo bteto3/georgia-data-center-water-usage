@@ -161,6 +161,12 @@ def bar_chart_visualization():
     )
     fig.update_layout(xaxis_title="County", yaxis_title="Water (mgd)")
     fig.show()
+    folder = "visualizations"
+    filename = "data_center_water_data_bar_chart.png"
+    full_path = os.path.join(folder, filename)
+    #fig.write_image(full_path)
+    fig.write_image(full_path, width=1200, height=900, scale=3)
+    fig.write_html(os.path.join(folder, "data_center_water_data_bar_chart.html"))
 
 
 map_visualization()
