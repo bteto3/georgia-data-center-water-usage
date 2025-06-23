@@ -296,7 +296,48 @@ def plot_submission_timeline():
     os.makedirs(folder, exist_ok=True)
     plt.savefig(os.path.join(folder, "data_center_data_center_timeline_matplotlib.png"), dpi=300, bbox_inches='tight')
 
+def plot_water_consumption_histogram():
+    # Load your data
+    script_dir = Path(__file__).resolve().parent
+    data_center_path = script_dir.parent / "Data" / "data_center.csv"
+    df = pd.read_csv(data_center_path)
 
+    # Convert the water usage column to numeric
+    df["Water Consumption/Loss"] = pd.to_numeric(df["Water Consumption/Loss"], errors="coerce")
+
+    # Drop missing or invalid values
+    df = df.dropna(subset=["Water Consumption/Loss"])
+
+    #bin_width = 0.5
+    #max_val = df["Water Consumption/Loss"].max()
+    #xticks = np.arange(0, max_val + bin_width, bin_width)    
+
+    # Plot histogram
+    bins = np.arange(0, df["Water Consumption/Loss"].max() + 0.5, 0.5)
+    plt.figure(figsize=(10, 6))
+    #plt.hist(df["Water Consumption/Loss"], bins=20, color="skyblue", edgecolor="black", alpha=0.8)
+    plt.hist(
+        df["Water Consumption/Loss"],
+        bins = bins,                    # or set your own: bins=np.arange(0, 20, 1)
+        color="skyblue",
+        edgecolor="black",
+        alpha=0.8,
+        align="mid",               # or 'left' for left-aligned bars
+        rwidth = 1.0                 # makes bars narrower, adds spacing
+    )
+
+    # Styling
+    #plt.xticks(xticks)
+    plt.xlabel("Water Consumption (mgd)", fontsize=12, fontweight="bold")
+    plt.ylabel("Number of Projects", fontsize=12, fontweight="bold")
+    plt.title("Distribution of Water Consumption per Project", fontsize=14, fontweight="bold")
+    plt.grid(True, axis='y', linestyle="--", alpha=0.4)
+
+    # Save to file
+
+    folder = "visualizations"
+    os.makedirs(folder, exist_ok=True)
+    plt.savefig(os.path.join(folder, "data_center_water_consumption_histogram_matplotlib.png"), dpi=300)
 
 def map_visualization():
     script_dir = Path(__file__).resolve().parent
@@ -468,3 +509,5 @@ map_visualzation_matplotlib()
 plot_stacked_bar_by_county()
 
 plot_submission_timeline()
+
+plot_water_consumption_histogram()
