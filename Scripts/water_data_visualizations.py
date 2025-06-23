@@ -1,13 +1,11 @@
 import pandas as pd
 import numpy as np
-import seaborn as sns
 import matplotlib.pyplot as plt
 import geopandas as gpd
 import plotly.express as px
 from pathlib import Path
 import os
 import plotly.graph_objects as go
-import plotly.io as pio
 import requests
 from shapely.geometry import shape
 from datetime import datetime
