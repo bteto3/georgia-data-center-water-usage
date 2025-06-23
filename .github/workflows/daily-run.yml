@@ -27,3 +27,4 @@ jobs:
       run: |
         python Scripts/water_data.py
         python Scripts/water_data_post_processing.py
+        python Scripts/water_data_visualizations.py
