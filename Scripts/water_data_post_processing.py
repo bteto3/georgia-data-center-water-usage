@@ -41,7 +41,7 @@ def water_data_post_processing():
     water_data_df["Project info"] = water_data_df["Project info"].apply(ast.literal_eval)
     for dri in dri_list:
         if dri not in post_processing_dri_list:
-            dri_post_processing_df.loc[dri] = [np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan]
+            dri_post_processing_df.loc[dri] = [np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan]
         #print(data_center_df.loc[dri, "Data Center?"])
         #print(data_center_df.loc[dri, "Data Center?"] == "TBD")
         if pd.isna(dri_post_processing_df.loc[dri, "Project Name"]):

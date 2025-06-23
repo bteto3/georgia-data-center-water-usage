@@ -134,6 +134,88 @@ def map_visualzation_matplotlib():
     plt.savefig(os.path.join(folder, "data_center_water_data_county_map_matplotlib.png"), dpi=300, bbox_inches='tight')
     plt.close()
 
+
+def plot_stacked_bar_by_county():
+    # Filter out rows with missing water consumption
+    script_dir = Path(__file__).resolve().parent
+    data_center_path = script_dir.parent / "Data" / "data_center.csv"
+    df = pd.read_csv(data_center_path)
+    df = df.dropna(subset=["Water Consumption/Loss"])
+
+    # Aggregate total water consumption per county to get sorting order
+    county_totals = df.groupby("County")["Water Consumption/Loss"].sum().sort_values(ascending=False)
+    sorted_counties = county_totals.index.tolist()
+
+    # Sort the original df by this county order
+    df["County"] = pd.Categorical(df["County"], categories=sorted_counties, ordered=True)
+    df = df.sort_values("County")
+
+    # Prepare data for stacking:
+    # Each data center project will be a segment in the stack.
+    # So group by County and some project ID (like "DRI Number")
+    projects = df["DRI Number"].unique()
+
+    # Create a pivot table: rows=counties, columns=projects, values=water consumption
+    pivot = df.pivot_table(index="County", columns="Project Name", values="Water Consumption/Loss", aggfunc='sum', fill_value=0, observed=False)
+    pivot = pivot.apply(pd.to_numeric, errors="coerce").fillna(0)
+    project_totals = pivot.sum(axis=0).sort_values(ascending=False)
+    pivot = pivot[project_totals.index]  # Reorder columns
+    county_totals = pivot.sum(axis=1).sort_values(ascending=False)
+    pivot = pivot.loc[county_totals.index]  
+    # Plot stacked bar chart
+    fig, ax = plt.subplots(figsize=(14, 8))
+
+    project_to_counties = df.groupby("Project Name")["County"].unique()
+    bottom = np.zeros(len(pivot))
+    for project in pivot.columns:
+        values = pivot[project].values
+        counties = project_to_counties.get(project, ["Unknown"])
+        counties_str = ", ".join(counties)
+        ax.bar(pivot.index, values, bottom=bottom, label=f"{project} ({counties_str})")
+        bottom += values
+    
+
+    # Formatting
+    ax.set_xticklabels(pivot.index, rotation=90)
+    ax.set_ylabel("Water Consumption (mgd)")
+    ax.set_title("Water Consumption by County and Data Center Project")
+    ax.legend(title="Project Names", bbox_to_anchor=(1.05, 1), loc='upper left')
+    #plt.tight_layout()
+    #plt.show()
+    folder = "visualizations"
+    os.makedirs(folder, exist_ok=True)
+    plt.savefig(os.path.join(folder, "data_center_water_data_bar_chart_matplotlib.png"), dpi=300, bbox_inches='tight')
+
+def plot_submission_timeline():
+    script_dir = Path(__file__).resolve().parent
+    data_center_path = script_dir.parent / "Data" / "data_center.csv"
+    df = pd.read_csv(data_center_path)
+    # Drop rows without a valid submission date
+    df = df.dropna(subset=["Initial Info Form Submision Date"])
+
+    # Sort by date
+    df_sorted = df.sort_values("Initial Info Form Submision Date")
+
+    # Set up the figure
+    fig, ax = plt.subplots(figsize=(14, 6))
+
+    # Plot event markers
+    ax.scatter(df_sorted["Initial Info Form Submision Date"], 
+               range(len(df_sorted)), 
+               marker='o', color='skyblue')
+
+    # Label each point (optional, can get crowded)
+    for i, row in enumerate(df_sorted.itertuples()):
+        ax.text(row._2, i, f"{row.County} ({row._1})", fontsize=6, va='center', ha='left')
+
+    # Formatting
+    ax.set_yticks([])
+    ax.set_xlabel("Initial Info Form Submission Date")
+    ax.set_title("Timeline of Data Center Project Submissions")
+    #plt.tight_layout()
+    plt.grid(True, axis='x', linestyle='--', alpha=0.4)
+    plt.show()
+
 def map_visualization():
     script_dir = Path(__file__).resolve().parent
     data_center_path = script_dir.parent / "Data" / "data_center.csv"
@@ -300,3 +382,7 @@ def bar_chart_visualization():
 #map_visualization()
 #bar_chart_visualization()
 map_visualzation_matplotlib()
+
+plot_stacked_bar_by_county()
+
+plot_submission_timeline()
