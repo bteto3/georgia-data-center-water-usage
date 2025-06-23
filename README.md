@@ -1,13 +1,13 @@
 # Water usage by data centers in Georgia
 
 * A map showing the number of data center projects in each Georgia County
-<!-- FIGURE_1 -->
+![data_center_water_data_county_map_matplotlib](visualizations/data_center_water_data_county_map_matplotlib.png)
 * A bar chart showing the water conumption of each project grouped by county
-<!-- FIGURE_2 -->
+![data_center_water_data_bar_chart_matplotlib](visualizations/data_center_water_data_bar_chart_matplotlib.png)
 * A timeline showing when each data center project submitted the initial form
-<!-- FIGURE_3 -->
+![data_center_data_center_timeline_matplotlib](visualizations/data_center_data_center_timeline_matplotlib.png)
 * A histrogram showing the distrubution of water consumption
-<!-- FIGURE_4 -->
+![data_center_water_consumption_histogram_matplotlib](visualizations/data_center_water_consumption_histogram_matplotlib.png)
 
 * Collecting and organzing data regarding water usage by data centers in the state of Georgia by scraping data from the DRI submissions webpage
   - https://apps.dca.ga.gov/DRI/Submissions.aspx
