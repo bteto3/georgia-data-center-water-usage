@@ -28,3 +28,4 @@ jobs:
         python Scripts/water_data.py
         python Scripts/water_data_post_processing.py
         python Scripts/water_data_visualizations.py
+        python Scripts/water_data_visualization_to_README.py
