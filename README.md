@@ -9,14 +9,3 @@
 * There are 2 GitHub workflows under the .github sub folder
   - One workflow updates the master csv file with any new or updated submissions in the DRI submissions webpaage
   - The second workflow takes a weekly snapshot of the master csv file
-
-
-![data_center_water_data_county_map_matplotlib](visualizations/data_center_water_data_county_map_matplotlib.png)
-![data_center_water_data_bar_chart_matplotlib](visualizations/data_center_water_data_bar_chart_matplotlib.png)
-![data_center_data_center_timeline_matplotlib](visualizations/data_center_data_center_timeline_matplotlib.png)
-![data_center_water_consumption_histogram_matplotlib](visualizations/data_center_water_consumption_histogram_matplotlib.png)
-
-![data_center_water_data_county_map_matplotlib](visualizations/data_center_water_data_county_map_matplotlib.png)
-![data_center_water_data_bar_chart_matplotlib](visualizations/data_center_water_data_bar_chart_matplotlib.png)
-![data_center_data_center_timeline_matplotlib](visualizations/data_center_data_center_timeline_matplotlib.png)
-![data_center_water_consumption_histogram_matplotlib](visualizations/data_center_water_consumption_histogram_matplotlib.png)
