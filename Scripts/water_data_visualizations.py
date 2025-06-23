@@ -10,6 +10,10 @@ import plotly.graph_objects as go
 import plotly.io as pio
 import requests
 from shapely.geometry import shape
+from datetime import datetime
+import matplotlib.dates as mdates
+from matplotlib import colormaps
+
 
 def map_visualzation_matplotlib():
     # Load Georgia counties geometry from GeoJSON
@@ -191,30 +195,108 @@ def plot_submission_timeline():
     data_center_path = script_dir.parent / "Data" / "data_center.csv"
     df = pd.read_csv(data_center_path)
     # Drop rows without a valid submission date
-    df = df.dropna(subset=["Initial Info Form Submision Date"])
+    #df = df.dropna(subset=["Initial Info Form Submision Date"])
+    #df = pd.DataFrame(data, columns=['Project', 'County', 'Date'])
 
-    # Sort by date
-    df_sorted = df.sort_values("Initial Info Form Submision Date")
+    # Convert the submission date to datetime
+    # Convert the submission date to datetime
+    df['Initial Info Form Submision Date'] = pd.to_datetime(df['Initial Info Form Submision Date'], format='%m/%d/%Y')
 
-    # Set up the figure
-    fig, ax = plt.subplots(figsize=(14, 6))
+    # Sort by submission date
+    df = df.sort_values('Initial Info Form Submision Date')
 
-    # Plot event markers
-    ax.scatter(df_sorted["Initial Info Form Submision Date"], 
-               range(len(df_sorted)), 
-               marker='o', color='skyblue')
+    # Create the plot
+    fig, ax = plt.subplots(figsize=(18, 12))  # Made wider to accommodate legend
 
-    # Label each point (optional, can get crowded)
-    for i, row in enumerate(df_sorted.itertuples()):
-        ax.text(row._2, i, f"{row.County} ({row._1})", fontsize=6, va='center', ha='left')
+    # Create timeline plot
+    # Since data is sorted chronologically, y-positions represent cumulative count
+    y_positions = range(1, len(df) + 1)  # Start from 1 for cumulative count
 
-    # Formatting
-    ax.set_yticks([])
-    ax.set_xlabel("Initial Info Form Submission Date")
-    ax.set_title("Timeline of Data Center Project Submissions")
-    #plt.tight_layout()
-    plt.grid(True, axis='x', linestyle='--', alpha=0.4)
-    plt.show()
+    # Create color mapping by county
+    unique_counties = df['County'].unique()
+    #color_map = plt.cm.Set3(range(len(unique_counties)))
+    #county_colors = {county: color_map[i] for i, county in enumerate(unique_counties)}
+
+    cmap = colormaps.get_cmap("tab20")  # or "tab20", "Set3", "hsv", etc.
+
+
+    color_map = [cmap(i / len(unique_counties)) for i in range(len(unique_counties))]
+
+    # Assign each unique county a distinct color
+    county_colors = {county: color_map[i] for i, county in enumerate(unique_counties)}
+
+    # Map colors to each project based on county
+    colors = [county_colors[county] for county in df['County']]
+
+    # Plot the timeline points
+    scatter = ax.scatter(df['Initial Info Form Submision Date'], y_positions, 
+                        c=colors, s=100, alpha=0.7, edgecolors='black', linewidth=0.5)
+
+    # Add project names to the right of each point
+    for i, (idx, row) in enumerate(df.iterrows()):
+        cumulative_count = i + 1  # i starts at 0, so add 1 for cumulative count
+        ax.annotate(f"{row['Project Name']} ({row['County']})", 
+                    (row['Initial Info Form Submision Date'], cumulative_count), 
+                    xytext=(10, 0), 
+                    textcoords='offset points',
+                    fontsize=9,
+                    va='center',
+                    ha='left')
+
+    # Format the plot
+    ax.set_yticks(y_positions[::5])  # Show every 5th tick to avoid crowding
+    ax.set_ylabel('Cumulative Number of Projects', fontsize=12, fontweight='bold')
+    ax.set_xlabel('Initial Form Submission Date', fontsize=12, fontweight='bold')
+    ax.set_title('Cumulative Timeline of Project Initial Form Submissions', fontsize=16, fontweight='bold', pad=20)
+
+    # Format x-axis dates
+    ax.xaxis.set_major_locator(mdates.YearLocator())
+    ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
+
+    # Rotate x-axis labels for better readability
+    plt.setp(ax.xaxis.get_majorticklabels(), rotation=45, ha='right', fontsize=10)
+
+    # Add more space at bottom for rotated labels
+    plt.subplots_adjust(bottom=0.15)
+
+    # Add grid for better readability
+    ax.grid(True, alpha=0.3, axis='both')  # Add grid for both axes
+
+    # Add more space at bottom for rotated labels
+    plt.subplots_adjust(bottom=0.15, right=0.75)  # Make room for legend on right
+
+    # Create legend for counties
+    legend_elements = [plt.Line2D([0], [0], marker='o', color='w', markerfacecolor=county_colors[county], 
+                                markersize=8, label=county, markeredgecolor='black', markeredgewidth=0.5) 
+                    for county in unique_counties]
+
+    # Add legend outside the plot area
+    ax.legend(handles=legend_elements, loc='center left', bbox_to_anchor=(1.02, 0), 
+            title='County', title_fontsize=12, fontsize=10)
+
+    # Adjust layout to prevent label cutoff
+    plt.tight_layout()
+
+    # Add some styling
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    # Keep left spine visible now since y-axis has meaning
+
+    # Add a subtitle with summary statistics
+    earliest_date = df['Initial Info Form Submision Date'].min().strftime('%B %d, %Y')
+    latest_date = df['Initial Info Form Submision Date'].max().strftime('%B %d, %Y')
+    total_projects = len(df)
+
+    plt.figtext(0.5, 0.02, f'Total Projects: {total_projects} | Date Range: {earliest_date} to {latest_date}', 
+                ha='center', fontsize=10, style='italic')
+
+    #plt.figtext(0.5, 0.02, f'Total Projects: {total_projects} | Date Range: {earliest_date} to {latest_date}', ha='center', fontsize=10, style='italic')
+
+    folder = "visualizations"
+    os.makedirs(folder, exist_ok=True)
+    plt.savefig(os.path.join(folder, "data_center_data_center_timeline_matplotlib.png"), dpi=300, bbox_inches='tight')
+
+
 
 def map_visualization():
     script_dir = Path(__file__).resolve().parent
