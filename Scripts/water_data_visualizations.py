@@ -313,7 +313,7 @@ def plot_water_consumption_histogram():
     #xticks = np.arange(0, max_val + bin_width, bin_width)    
 
     # Plot histogram
-    bins = np.arange(0, df["Water Consumption/Loss"].max() + 0.5, 0.5)
+    bins = np.arange(0, df["Water Consumption/Loss"].max() + 0.25, 0.25)
     plt.figure(figsize=(10, 6))
     #plt.hist(df["Water Consumption/Loss"], bins=20, color="skyblue", edgecolor="black", alpha=0.8)
     plt.hist(
