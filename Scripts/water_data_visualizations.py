@@ -125,7 +125,7 @@ def map_visualzation_matplotlib():
     '''
         
     # Tidy layout
-    ax.set_title("Water Consumption by County", fontsize=16)
+    ax.set_title("Number of Data Centers by County", fontsize=16)
     ax.axis("off")
 
     # Save the static image
