@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 import geopandas as gpd
@@ -6,6 +7,133 @@ import plotly.express as px
 from pathlib import Path
 import os
 import plotly.graph_objects as go
+import plotly.io as pio
+import requests
+from shapely.geometry import shape
+
+def map_visualzation_matplotlib():
+    # Load Georgia counties geometry from GeoJSON
+    url = "https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json"
+    geojson = requests.get(url).json()
+    features = geojson["features"]
+    geometries = [shape(f["geometry"]) for f in features]
+    fips_codes = [f["id"] for f in features]
+    ga_geo = gpd.GeoDataFrame({"fips": fips_codes}, geometry=geometries)
+    ga_geo = ga_geo[ga_geo["fips"].str.startswith("13")]
+
+    script_dir = Path(__file__).resolve().parent
+    data_center_path = script_dir.parent / "Data" / "data_center.csv"
+    df = pd.read_csv(data_center_path)  # or use pd.read_excel() if Excel
+    df["Water Consumption/Loss"] = pd.to_numeric(df["Water Consumption/Loss"], errors="coerce")  # convert numbers
+    df["Initial Info Form Submision Date"] = pd.to_datetime(df["Initial Info Form Submision Date"], errors="coerce")
+
+    usage_by_county = df.groupby("County").agg(
+    Water_Consumption=("Water Consumption/Loss", "sum"),
+    Num_Data_Centers=("DRI Number", "count")
+    ).reset_index()
+
+    ga_counties = pd.read_csv("https://raw.githubusercontent.com/kjhealy/fips-codes/master/state_and_county_fips_master.csv")
+    ga_counties = ga_counties[ga_counties["state"] == "GA"]
+    ga_counties["fips"] = ga_counties["fips"].apply(lambda x: f"{x:05d}")
+    ga_counties = ga_counties.rename(columns={"name": "County"})[["County", "fips"]]
+    ga_counties['County'] = ga_counties['County'].str.split().str[0]
+
+    merged = ga_counties.merge(usage_by_county, on="County", how="left")
+    merged["Water_Consumption"] = merged["Water_Consumption"].fillna(0)
+    merged["Num_Data_Centers"] = merged["Num_Data_Centers"].fillna(0)
+
+    column_names = ["Sort", "State", "fips", "County", "County Seat(s)", "Population", "Land Area (km)", "Land Area(mi)", "Water Area (km)", "Water Area(mi)", "Total Area (km)", "Total Area(mi)", "Lat", "Long"]
+    county_data_path = script_dir.parent / "Data" / "GA_county_centroids.csv"
+    county_data_df = pd.read_csv(county_data_path, header = None, names = column_names)
+    county_data_df = county_data_df.drop(["Sort", "State", "County Seat(s)", "Population", "Land Area (km)", "Land Area(mi)", "Water Area (km)", "Water Area(mi)", "Total Area (km)", "Total Area(mi)"], axis = 1)
+
+    # Add latitude and longitude from county_data_df
+    county_data_df['fips'] = county_data_df['fips'].astype(str)
+    merged['fips'] = merged['fips'].astype(str)
+    merged = merged.merge(county_data_df[["fips", "Lat", "Long"]], on="fips", how="left")
+
+    # Merge geometry with data
+    gdf = ga_geo.merge(merged, on="fips", how="left")
+
+    # Set up figure
+    fig, ax = plt.subplots(1, 1, figsize=(12, 10))
+
+    # Plot choropleth
+    gdf.plot(column="Water_Consumption", cmap="Blues", linewidth=0.8, edgecolor='0.8', legend=True, ax=ax)
+    
+    positions = [
+    {"offset": (0.2, 0.2), "ha": "left", "va": "bottom"},    # right-up
+    {"offset": (-0.3, 0), "ha": "right", "va": "center"},    # left
+    {"offset": (0, -0.25), "ha": "center", "va": "top"},     # below
+    ]
+
+    
+    # Annotate counties with # of data centers
+    for i, row in gdf[gdf["Num_Data_Centers"] > 0].iterrows():
+        ax.text(row["geometry"].centroid.x, row["geometry"].centroid.y, 
+                str(int(row["Num_Data_Centers"])),
+                fontsize=6, ha='center', va='center', color='black')
+        '''
+        centroid = row["geometry"].centroid
+        #label = f"{row['County']}\n{int(row['Num_Data_Centers'])} data center(s)"
+        label = f"{row['County']}"
+        
+        
+        pos = positions[i % len(positions)]  # cycle positions
+    
+        ax.annotate(
+            label,
+            xy=(centroid.x, centroid.y),
+            xytext=(centroid.x + pos["offset"][0], centroid.y + pos["offset"][1]),
+            textcoords='data',
+            fontsize=6,
+            ha=pos["ha"],
+            va=pos["va"],
+            bbox=dict(boxstyle='round,pad=0.3', fc='white', ec='none', alpha=0.8),
+            arrowprops=dict(arrowstyle='->', color='black', lw=0.5),
+        )
+
+        
+        # Offset the text slightly from the county centroid
+        offset_x = -0.1  # degrees of longitude
+        offset_y = 0.2  # degrees of latitude
+        ax.annotate(
+            label,
+            xy=(centroid.x, centroid.y),  # arrow points here
+            xytext=(centroid.x + offset_x, centroid.y + offset_y),  # text is placed here
+            textcoords='data',
+            fontsize=6,
+            ha='left',
+            va='bottom',
+            #bbox=dict(boxstyle='round,pad=0.3', fc='white', ec='none', alpha=0.8),
+            arrowprops=dict(arrowstyle='->', color='black', lw=0.5),
+        )
+        '''
+    '''
+    for idx, row in gdf[gdf["Num_Data_Centers"] > 0].iterrows():
+        centroid = row["geometry"].centroid
+        label = f"{row['County']}\n{int(row['Num_Data_Centers'])} data center(s)"
+        ax.text(
+            centroid.x, centroid.y,
+            label,
+            fontsize=6,
+            ha='center',
+            va='center',
+            color='black',
+            bbox=dict(facecolor='white', edgecolor='none', alpha=0.7, boxstyle='round,pad=0.2')
+        )
+    '''
+        
+    # Tidy layout
+    ax.set_title("Water Consumption by County", fontsize=16)
+    ax.axis("off")
+
+    # Save the static image
+    folder = "visualizations"
+    os.makedirs(folder, exist_ok=True)
+    plt.savefig(os.path.join(folder, "data_center_water_data_county_map_matplotlib.png"), dpi=300, bbox_inches='tight')
+    plt.close()
+
 def map_visualization():
     script_dir = Path(__file__).resolve().parent
     data_center_path = script_dir.parent / "Data" / "data_center.csv"
@@ -169,5 +297,6 @@ def bar_chart_visualization():
     fig.write_html(os.path.join(folder, "data_center_water_data_bar_chart.html"))
 
 
-map_visualization()
-bar_chart_visualization()
+#map_visualization()
+#bar_chart_visualization()
+map_visualzation_matplotlib()
