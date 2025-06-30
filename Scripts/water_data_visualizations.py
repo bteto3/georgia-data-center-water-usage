@@ -142,6 +142,8 @@ def plot_stacked_bar_by_county():
     script_dir = Path(__file__).resolve().parent
     data_center_path = script_dir.parent / "Data" / "data_center.csv"
     df = pd.read_csv(data_center_path)
+    df["Water Consumption/Loss"] = pd.to_numeric(df["Water Consumption/Loss"], errors="coerce")
+    #df["Water Consumption/Loss"] = df["Water Consumption/Loss"].fillna(0)
     df = df.dropna(subset=["Water Consumption/Loss"])
 
     # Aggregate total water consumption per county to get sorting order
@@ -182,6 +184,7 @@ def plot_stacked_bar_by_county():
     ax.set_ylabel("Water Consumption (mgd)")
     ax.set_title("Water Consumption by County and Data Center Project")
     ax.legend(title="Project Names", bbox_to_anchor=(1.05, 1), loc='upper left')
+    plt.setp(ax.xaxis.get_majorticklabels(), rotation=45, ha='right', fontsize=10)
     #plt.tight_layout()
     #plt.show()
     folder = "visualizations"
@@ -320,7 +323,7 @@ def plot_water_consumption_histogram():
         color="skyblue",
         edgecolor="black",
         alpha=0.8,
-        align="mid",               # or 'left' for left-aligned bars
+        align="mid",
         rwidth = 1.0                 # makes bars narrower, adds spacing
     )
 
@@ -336,6 +339,43 @@ def plot_water_consumption_histogram():
     folder = "visualizations"
     os.makedirs(folder, exist_ok=True)
     plt.savefig(os.path.join(folder, "data_center_water_consumption_histogram_matplotlib.png"), dpi=300)
+
+def plot_water_consumption_log_histogram():
+    script_dir = Path(__file__).resolve().parent
+    data_center_path = script_dir.parent / "Data" / "data_center.csv"
+    df = pd.read_csv(data_center_path)
+
+    # Convert the water usage column to numeric
+    df["Water Consumption/Loss"] = pd.to_numeric(df["Water Consumption/Loss"], errors="coerce")
+
+    data = df["Water Consumption/Loss"]
+    data = data[data > 0]
+
+    # Define logarithmic bins (logspace for better spacing)
+    bins = np.logspace(np.log10(data.min()), np.log10(data.max()), 30)
+
+    plt.figure(figsize=(10, 6))
+    plt.hist(
+        data,
+        bins=bins,
+        color="skyblue",
+        edgecolor="black",
+        alpha=0.8,
+        align="mid",
+        rwidth = 1.0
+    )
+
+    plt.xscale('log')  # Set X-axis to log scale
+    plt.xlabel("Water Consumption (mgd, log scale)", fontsize=12, fontweight="bold")
+    plt.ylabel("Number of Projects", fontsize=12, fontweight="bold")
+    plt.title("Histogram of Water Consumption (Logarithmic X-Axis)", fontsize=14, fontweight="bold")
+    plt.grid(True, axis='both', which='both', linestyle='--', alpha=0.3)
+
+    #plt.tight_layout()
+    folder = "visualizations"
+    os.makedirs(folder, exist_ok=True)
+    plt.savefig(os.path.join(folder, "data_center_water_consumption_log_histogram_matplotlib.png"), dpi=300)
+    
 
 def map_visualization():
     script_dir = Path(__file__).resolve().parent
@@ -509,3 +549,5 @@ plot_stacked_bar_by_county()
 plot_submission_timeline()
 
 plot_water_consumption_histogram()
+
+plot_water_consumption_log_histogram()
