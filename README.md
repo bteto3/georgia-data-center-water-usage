@@ -21,7 +21,7 @@ But not all data center projects consume millions of gallons of water per day. S
 ## Data Collection Details
 * The data above is obtained by weekly scrapes of the DRI submissions webpage
   - https://apps.dca.ga.gov/DRI/Submissions.aspx
-* There are 3 csv files in the Data sub folder
+* There are 3 csv files in the data sub folder
   - The dri_data csv is the master csv that contains all the project info for all the projects registered in the DRi submissions webpage
   - The dri_post_processing.csv file is the csv file that contains only the raw water data for each of the projects, along with a indication of whether the project desscription contains the word 'data center'
   - The data_center.csv file contains the projects that got flagged as data centers and contains the cleaned water data for each of the projects

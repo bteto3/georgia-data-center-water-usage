@@ -24,7 +24,7 @@ def map_visualzation_matplotlib():
     ga_geo = ga_geo[ga_geo["fips"].str.startswith("13")]
 
     script_dir = Path(__file__).resolve().parent
-    data_center_path = script_dir.parent / "Data" / "data_center.csv"
+    data_center_path = script_dir.parent / "data" / "data_center.csv"
     df = pd.read_csv(data_center_path)  # or use pd.read_excel() if Excel
     df["Water Consumption/Loss"] = pd.to_numeric(df["Water Consumption/Loss"], errors="coerce")  # convert numbers
     df["Initial Info Form Submision Date"] = pd.to_datetime(df["Initial Info Form Submision Date"], errors="coerce")
@@ -45,7 +45,7 @@ def map_visualzation_matplotlib():
     merged["Num_Data_Centers"] = merged["Num_Data_Centers"].fillna(0)
 
     column_names = ["Sort", "State", "fips", "County", "County Seat(s)", "Population", "Land Area (km)", "Land Area(mi)", "Water Area (km)", "Water Area(mi)", "Total Area (km)", "Total Area(mi)", "Lat", "Long"]
-    county_data_path = script_dir.parent / "Data" / "GA_county_centroids.csv"
+    county_data_path = script_dir.parent / "data" / "GA_county_centroids.csv"
     county_data_df = pd.read_csv(county_data_path, header = None, names = column_names)
     county_data_df = county_data_df.drop(["Sort", "State", "County Seat(s)", "Population", "Land Area (km)", "Land Area(mi)", "Water Area (km)", "Water Area(mi)", "Total Area (km)", "Total Area(mi)"], axis = 1)
 
@@ -62,27 +62,27 @@ def map_visualzation_matplotlib():
 
     # Plot choropleth
     gdf.plot(column="Water_Consumption", cmap="Blues", linewidth=0.8, edgecolor='0.8', legend=True, ax=ax)
-    
+
     positions = [
     {"offset": (0.2, 0.2), "ha": "left", "va": "bottom"},    # right-up
     {"offset": (-0.3, 0), "ha": "right", "va": "center"},    # left
     {"offset": (0, -0.25), "ha": "center", "va": "top"},     # below
     ]
 
-    
+
     # Annotate counties with # of data centers
     for i, row in gdf[gdf["Num_Data_Centers"] > 0].iterrows():
-        ax.text(row["geometry"].centroid.x, row["geometry"].centroid.y, 
+        ax.text(row["geometry"].centroid.x, row["geometry"].centroid.y,
                 str(int(row["Num_Data_Centers"])),
                 fontsize=6, ha='center', va='center', color='black')
         '''
         centroid = row["geometry"].centroid
         #label = f"{row['County']}\n{int(row['Num_Data_Centers'])} data center(s)"
         label = f"{row['County']}"
-        
-        
+
+
         pos = positions[i % len(positions)]  # cycle positions
-    
+
         ax.annotate(
             label,
             xy=(centroid.x, centroid.y),
@@ -95,7 +95,7 @@ def map_visualzation_matplotlib():
             arrowprops=dict(arrowstyle='->', color='black', lw=0.5),
         )
 
-        
+
         # Offset the text slightly from the county centroid
         offset_x = -0.1  # degrees of longitude
         offset_y = 0.2  # degrees of latitude
@@ -125,7 +125,7 @@ def map_visualzation_matplotlib():
             bbox=dict(facecolor='white', edgecolor='none', alpha=0.7, boxstyle='round,pad=0.2')
         )
     '''
-        
+
     # Tidy layout
     ax.set_title("Number of Data Centers by County", fontsize=16)
     ax.axis("off")
@@ -140,7 +140,7 @@ def map_visualzation_matplotlib():
 def plot_stacked_bar_by_county():
     # Filter out rows with missing water consumption
     script_dir = Path(__file__).resolve().parent
-    data_center_path = script_dir.parent / "Data" / "data_center.csv"
+    data_center_path = script_dir.parent / "data" / "data_center.csv"
     df = pd.read_csv(data_center_path)
     df["Water Consumption/Loss"] = pd.to_numeric(df["Water Consumption/Loss"], errors="coerce")
     #df["Water Consumption/Loss"] = df["Water Consumption/Loss"].fillna(0)
@@ -165,7 +165,7 @@ def plot_stacked_bar_by_county():
     project_totals = pivot.sum(axis=0).sort_values(ascending=False)
     pivot = pivot[project_totals.index]  # Reorder columns
     county_totals = pivot.sum(axis=1).sort_values(ascending=False)
-    pivot = pivot.loc[county_totals.index]  
+    pivot = pivot.loc[county_totals.index]
     # Plot stacked bar chart
     fig, ax = plt.subplots(figsize=(14, 8))
 
@@ -177,7 +177,7 @@ def plot_stacked_bar_by_county():
         counties_str = ", ".join(counties)
         ax.bar(pivot.index, values, bottom=bottom, label=f"{project} ({counties_str})")
         bottom += values
-    
+
 
     # Formatting
     ax.set_xticklabels(pivot.index, rotation=90)
@@ -193,7 +193,7 @@ def plot_stacked_bar_by_county():
 
 def plot_submission_timeline():
     script_dir = Path(__file__).resolve().parent
-    data_center_path = script_dir.parent / "Data" / "data_center.csv"
+    data_center_path = script_dir.parent / "data" / "data_center.csv"
     df = pd.read_csv(data_center_path)
     # Drop rows without a valid submission date
     #df = df.dropna(subset=["Initial Info Form Submision Date"])
@@ -230,15 +230,15 @@ def plot_submission_timeline():
     colors = [county_colors[county] for county in df['County']]
 
     # Plot the timeline points
-    scatter = ax.scatter(df['Initial Info Form Submision Date'], y_positions, 
+    scatter = ax.scatter(df['Initial Info Form Submision Date'], y_positions,
                         c=colors, s=100, alpha=0.7, edgecolors='black', linewidth=0.5)
 
     # Add project names to the right of each point
     for i, (idx, row) in enumerate(df.iterrows()):
         cumulative_count = i + 1  # i starts at 0, so add 1 for cumulative count
-        ax.annotate(f"{row['Project Name']} ({row['County']})", 
-                    (row['Initial Info Form Submision Date'], cumulative_count), 
-                    xytext=(10, 0), 
+        ax.annotate(f"{row['Project Name']} ({row['County']})",
+                    (row['Initial Info Form Submision Date'], cumulative_count),
+                    xytext=(10, 0),
                     textcoords='offset points',
                     fontsize=9,
                     va='center',
@@ -267,12 +267,12 @@ def plot_submission_timeline():
     plt.subplots_adjust(bottom=0.15, right=0.75)  # Make room for legend on right
 
     # Create legend for counties
-    legend_elements = [plt.Line2D([0], [0], marker='o', color='w', markerfacecolor=county_colors[county], 
-                                markersize=8, label=county, markeredgecolor='black', markeredgewidth=0.5) 
+    legend_elements = [plt.Line2D([0], [0], marker='o', color='w', markerfacecolor=county_colors[county],
+                                markersize=8, label=county, markeredgecolor='black', markeredgewidth=0.5)
                     for county in unique_counties]
 
     # Add legend outside the plot area
-    ax.legend(handles=legend_elements, loc='center left', bbox_to_anchor=(1.02, 0), 
+    ax.legend(handles=legend_elements, loc='center left', bbox_to_anchor=(1.02, 0),
             title='County', title_fontsize=12, fontsize=10)
 
     # Adjust layout to prevent label cutoff
@@ -288,7 +288,7 @@ def plot_submission_timeline():
     latest_date = df['Initial Info Form Submision Date'].max().strftime('%B %d, %Y')
     total_projects = len(df)
 
-    plt.figtext(0.5, 0.02, f'Total Projects: {total_projects} | Date Range: {earliest_date} to {latest_date}', 
+    plt.figtext(0.5, 0.02, f'Total Projects: {total_projects} | Date Range: {earliest_date} to {latest_date}',
                 ha='center', fontsize=10, style='italic')
 
     #plt.figtext(0.5, 0.02, f'Total Projects: {total_projects} | Date Range: {earliest_date} to {latest_date}', ha='center', fontsize=10, style='italic')
@@ -300,7 +300,7 @@ def plot_submission_timeline():
 def plot_water_consumption_histogram():
     # Load your data
     script_dir = Path(__file__).resolve().parent
-    data_center_path = script_dir.parent / "Data" / "data_center.csv"
+    data_center_path = script_dir.parent / "data" / "data_center.csv"
     df = pd.read_csv(data_center_path)
 
     # Convert the water usage column to numeric
@@ -311,7 +311,7 @@ def plot_water_consumption_histogram():
 
     #bin_width = 0.5
     #max_val = df["Water Consumption/Loss"].max()
-    #xticks = np.arange(0, max_val + bin_width, bin_width)    
+    #xticks = np.arange(0, max_val + bin_width, bin_width)
 
     # Plot histogram
     bins = np.arange(0, df["Water Consumption/Loss"].max() + 0.25, 0.25)
@@ -342,7 +342,7 @@ def plot_water_consumption_histogram():
 
 def plot_water_consumption_log_histogram():
     script_dir = Path(__file__).resolve().parent
-    data_center_path = script_dir.parent / "Data" / "data_center.csv"
+    data_center_path = script_dir.parent / "data" / "data_center.csv"
     df = pd.read_csv(data_center_path)
 
     # Convert the water usage column to numeric
@@ -375,12 +375,12 @@ def plot_water_consumption_log_histogram():
     folder = "visualizations"
     os.makedirs(folder, exist_ok=True)
     plt.savefig(os.path.join(folder, "data_center_water_consumption_log_histogram_matplotlib.png"), dpi=300)
-    
+
 
 def map_visualization():
     script_dir = Path(__file__).resolve().parent
-    data_center_path = script_dir.parent / "Data" / "data_center.csv"
-    county_data_path = script_dir.parent / "Data" / "GA_county_centroids.csv"
+    data_center_path = script_dir.parent / "data" / "data_center.csv"
+    county_data_path = script_dir.parent / "data" / "GA_county_centroids.csv"
     df = pd.read_csv(data_center_path)  # or use pd.read_excel() if Excel
     column_names = ["Sort", "State", "fips", "County", "County Seat(s)", "Population", "Land Area (km)", "Land Area(mi)", "Water Area (km)", "Water Area(mi)", "Total Area (km)", "Total Area(mi)", "Lat", "Long"]
     county_data_df = pd.read_csv(county_data_path, header = None, names = column_names)
@@ -463,7 +463,7 @@ def map_visualization():
     county_fips = county_county_data_df.set_index("County")["FIPS"].to_dict()
         #"Fulton": "13121", "Douglas": "13097", "Coweta": "13077", "Bartow": "13015",
         # Add all counties in your data with correct FIPS codes
-        
+
 
 
     county_group["fips"] = county_group["County"].map(county_fips)
@@ -511,7 +511,7 @@ def map_visualization():
 
 def bar_chart_visualization():
     script_dir = Path(__file__).resolve().parent
-    data_center_path = script_dir.parent / "Data" / "data_center.csv"
+    data_center_path = script_dir.parent / "data" / "data_center.csv"
     #county_data_path = script_dir.parent / "Data" / "GA_county_centroids.csv"
     df = pd.read_csv(data_center_path)  # or use pd.read_excel() if Excel
     df["Water Consumption/Loss"] = pd.to_numeric(df["Water Consumption/Loss"], errors="coerce")
