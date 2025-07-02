@@ -62,7 +62,18 @@ def map_visualzation_matplotlib():
     fig, ax = plt.subplots(1, 1, figsize=(12, 10))
 
     # Plot choropleth
-    gdf.plot(column="Water_Consumption", cmap="Blues", linewidth=0.8, edgecolor='0.8', legend=True, ax=ax)
+    gdf.plot(column="Water_Consumption", 
+             cmap="Blues", 
+             linewidth=0.8, 
+             edgecolor='0.8', 
+             legend=True, 
+             ax=ax,
+             legend_kwds={
+                'label': "Water Consumption (mgd)",  # ← your legend title
+                'orientation': "vertical",           # or "horizontal"
+                'shrink': 0.8                        # optional: scales the colorbar
+            }
+        )
 
     positions = [
     {"offset": (0.2, 0.2), "ha": "left", "va": "bottom"},    # right-up
