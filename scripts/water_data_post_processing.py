@@ -57,7 +57,7 @@ def water_data_post_processing():
                 dri_post_processing_df.loc[dri, "Contains 'data center'?"] = 1
             else:
                 dri_post_processing_df.loc[dri, "Contains 'data center'?"] = 0
-              
+
             try:
                 dri_post_processing_df.loc[dri, "Water Usage"] = project_info[13][1].lower()
                 if 'n/a' in project_info[13][1].lower():
@@ -111,7 +111,7 @@ def water_data_post_processing():
             except IndexError:
                 dri_post_processing_df.loc[dri, "Water Discharge Data"] = "No water data"
                 dri_post_processing_df.loc[dri, "Cleaned Water Discharge Data"] = "No water data"
-            
+
             dri_post_processing_df.loc[dri, "County"] = water_data_df.loc[dri, "County"]
             dri_post_processing_df.loc[dri, "Initial Info Form Submision Date"] = water_data_df.loc[dri, "Initial Info Form Submision Date"]
     #dri_post_processing_df['Cleaned Water Usage Data'] = dri_post_processing_df['Water Usage'].apply(parse_water_usage)
@@ -157,7 +157,7 @@ def parse_water_usage(value):
     match_int = re.search(r"[\d.]+", value)
     if match_int:
         return float(match_int.group())
-    
+
     # check if it's just a number
     try:
         return float(value)
@@ -180,7 +180,7 @@ def main():
 
     #dri_post_processing_df = pd.read_csv("../Data/dri_post_processing.csv", index_col = "DRI Number")
     script_dir = Path(__file__).resolve().parent
-    dri_post_processing_path = script_dir.parent / "Data" / "dri_post_processing.csv"
+    dri_post_processing_path = script_dir.parent / "data" / "dri_post_processing.csv"
     #dri_post_processing_df = pd.read_csv(dri_post_processing_path, index_col = "DRI Number")
     data_center_df = dri_post_processing_df[dri_post_processing_df["Contains 'data center'?"] == 1]
 

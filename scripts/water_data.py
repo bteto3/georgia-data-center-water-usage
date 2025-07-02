@@ -51,7 +51,7 @@ def get_driver():
     options.add_argument("--headless")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
-    
+
     # Use a unique, temporary user data directory
     temp_dir = tempfile.mkdtemp()
     options.add_argument(f"--user-data-dir={temp_dir}")
@@ -69,7 +69,7 @@ def main_page():
     else:
         print("div not found")
         return
-    
+
     urls = [a["href"] for a in raw_urls]
     final_urls = urls[10:]
 
@@ -82,7 +82,7 @@ def main_page():
         cols = row.find_all("td")
         row_data = [col.text.strip() for col in cols]
         data.append(row_data)
-    
+
     df = pd.DataFrame(data, columns = headers)
 
     #df.set_index("DRI ID", inplace = True)
@@ -147,7 +147,7 @@ def crawler(urls, dri_table, driver):
                 #dataframe_list.append(project_details)
             else:
                 print("Initial form has not been filled out yet")
-            
+
             href2 = soup.find("a", id = href_id_2)
             additional_form_url = href2["href"]
             additional_form_url = website_header + additional_form_url
@@ -187,7 +187,7 @@ def crawler(urls, dri_table, driver):
             #new_row.to_csv("dri_data.csv", mode = 'w', index = True)
     water_data_df.sort_index(inplace = True, ascending = False)
     dri_data_output_path = dri_data_path.parent / "dri_data.csv"
-    water_data_df.to_csv(dri_data_output_path, index = True)            
+    water_data_df.to_csv(dri_data_output_path, index = True)
 
 def fetch_initial_forms_data(initial_forms_url, project_details):
     response = requests.get(initial_forms_url)
@@ -218,7 +218,7 @@ def fetch_additional_form_data(additional_form_url, project_details):
         for row in subset:
             td = row.find_all("td")
             radio_buttons = row.find_all('input', {'type': 'radio'})
-            
+
             input_tag = row.find("input")
             raw_data = [element.text.strip() for element in td]
             if radio_buttons:
@@ -242,7 +242,7 @@ def fetch_additional_form_data(additional_form_url, project_details):
                 #raw_data.append(input_value)
                 #del raw_data[1]
                 #print("Raw Data: ", raw_data)
-            
+
             project_details.append(raw_data)
             #print(project_details)
         #return project_details
@@ -263,7 +263,7 @@ def clean_up(project_details):
     for element in project_details:
         element[0] = ' '.join(element[0].split())
 
-    
+
 
 
 
