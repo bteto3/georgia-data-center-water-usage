@@ -8,7 +8,7 @@ Data centers are rapidly being developed. Most of the identified data center DRI
 ![data_center_data_center_timeline_matplotlib](visualizations/quarterly_data_center_submissions.png)
 
 
-Data center projects can consume millions of gallons of water a day. The below bar chart shows individual project's water consumption grouped by county.
+Data center projects can consume millions of gallons of water a day. The below bar chart shows individual project's water consumption grouped by county. The water consumption is measured in million gallons per day (mgd).
 ![data_center_water_data_bar_chart_matplotlib](visualizations/data_center_water_data_bar_chart_matplotlib.png)
 
 Visualized georgraphically with color indicating per-county data center water consumption:
