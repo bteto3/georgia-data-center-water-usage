@@ -11,6 +11,7 @@ from shapely.geometry import shape
 from datetime import datetime
 import matplotlib.dates as mdates
 from matplotlib import colormaps
+from matplotlib.ticker import FuncFormatter
 
 
 def map_visualzation_matplotlib():
@@ -191,6 +192,125 @@ def plot_stacked_bar_by_county():
     os.makedirs(folder, exist_ok=True)
     plt.savefig(os.path.join(folder, "data_center_water_data_bar_chart_matplotlib.png"), dpi=300, bbox_inches='tight')
 
+def plot_monthly_submission_timeline():
+    script_dir = Path(__file__).resolve().parent
+    data_center_path = script_dir.parent / "data" / "data_center.csv"
+    df = pd.read_csv(data_center_path)
+    
+    # Drop rows without a valid submission date
+    df = df.dropna(subset=["Initial Info Form Submision Date"])
+    
+    # Convert the submission date to datetime
+    df['Initial Info Form Submision Date'] = pd.to_datetime(df['Initial Info Form Submision Date'], format='%m/%d/%Y')
+    
+    # Create a year-month column for grouping
+    df['Year_Quarter'] = df['Initial Info Form Submision Date'].dt.to_period('Q')
+    
+    # Group by month and county to get counts
+    quarterly_count = df.groupby(['Year_Quarter', 'County']).size().reset_index(name='count')
+    
+    # Create a complete date range to fill in months with zero submissions
+    date_range = pd.period_range(
+        start=df['Initial Info Form Submision Date'].min().to_period('Q'),
+        end=df['Initial Info Form Submision Date'].max().to_period('Q'),
+        freq='Q'
+    )
+    
+    # Get unique counties
+    unique_counties = df['County'].unique()
+    
+    # Create color mapping
+    cmap = colormaps.get_cmap("tab20")
+    color_map = [cmap(i / len(unique_counties)) for i in range(len(unique_counties))]
+    county_colors = {county: color_map[i] for i, county in enumerate(unique_counties)}
+    
+    # Create the plot
+    fig, ax = plt.subplots(figsize=(16, 10))
+    
+    # Create stacked bar chart or separate bars for each county
+    bottom_values = None
+    bar_width = 90  # Width in days for better visibility
+    
+    for county in unique_counties:
+        county_data = quarterly_count[quarterly_count['County'] == county]
+        
+        # Create a complete series with zeros for missing months
+        county_series = pd.Series(0, index=date_range, name=county)
+        for _, row in county_data.iterrows():
+            county_series[row['Year_Quarter']] = row['count']
+        
+        # Convert period index to datetime for plotting
+        x_dates = county_series.index.to_timestamp()
+        
+        if bottom_values is None:
+            # First county - plot from bottom
+            bars = ax.bar(x_dates, county_series.values, 
+                         width=bar_width, label=county, 
+                         color=county_colors[county], alpha=0.8,
+                         edgecolor='black', linewidth=1)
+            bottom_values = county_series.values.copy()
+        else:
+            # Subsequent counties - stack on top
+            bars = ax.bar(x_dates, county_series.values, 
+                         width=bar_width, label=county,
+                         bottom=bottom_values, color=county_colors[county], 
+                         alpha=0.8, edgecolor='black', linewidth=1)
+            bottom_values += county_series.values
+
+    
+    # Format the plot
+    
+    ax.set_ylabel('Number of Submissions', fontsize=12, fontweight='bold')
+    ax.set_xlabel('Quarter', fontsize=12, fontweight='bold')
+    ax.set_title('Quarterly Data Center Initial Form Submissions by County', 
+                 fontsize=16, fontweight='bold', pad=20)
+    
+    # Format x-axis dates (for stacked version)
+    ax.xaxis.set_major_locator(mdates.MonthLocator(bymonth=[1, 7]))  # Every 3 months
+    ax.xaxis.set_major_formatter(FuncFormatter(quarter_formatter))
+    ax.xaxis.set_minor_locator(mdates.MonthLocator(bymonth=[4, 10]))
+    
+    # Rotate x-axis labels
+    plt.setp(ax.xaxis.get_majorticklabels(), rotation=45, ha='right', fontsize=8)
+    
+    # Add grid
+    ax.grid(True, alpha=0.3, axis='y')
+    ax.set_axisbelow(True)
+    
+    # Add legend
+    ax.legend(title='County', title_fontsize=12, fontsize=10, 
+              loc='upper left', bbox_to_anchor=(1.02, 1))
+    
+    # Style the plot
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    
+    # Add summary statistics
+    total_projects = len(df)
+    earliest_date = df['Initial Info Form Submision Date'].min().strftime('%Y %Q')
+    latest_date = df['Initial Info Form Submision Date'].max().strftime('%Y %Q')
+    peak_quarter = quarterly_count.groupby('Year_Quarter')['count'].sum().idxmax()
+    
+    plt.figtext(0.5, 0.02, 
+                f'Total Projects: {total_projects} | Period: {earliest_date} to {latest_date} | Peak Month: {peak_quarter}',
+                ha='center', fontsize=10, style='italic')
+    
+    # Adjust layout
+    plt.tight_layout()
+    plt.subplots_adjust(bottom=0.15, right=0.75)
+    
+    # Save the plot
+    folder = "visualizations"
+    os.makedirs(folder, exist_ok=True)
+    plt.savefig(os.path.join(folder, "quarterly_data_center_submissions.png"), 
+                dpi=300, bbox_inches='tight')
+
+
+def quarter_formatter(x, pos):
+    date = mdates.num2date(x)
+    quarter = (date.month - 1) // 3 + 1
+    return f"{date.year} Q{quarter}"
+
 def plot_submission_timeline():
     script_dir = Path(__file__).resolve().parent
     data_center_path = script_dir.parent / "data" / "data_center.csv"
@@ -234,6 +354,7 @@ def plot_submission_timeline():
                         c=colors, s=100, alpha=0.7, edgecolors='black', linewidth=0.5)
 
     # Add project names to the right of each point
+    '''
     for i, (idx, row) in enumerate(df.iterrows()):
         cumulative_count = i + 1  # i starts at 0, so add 1 for cumulative count
         ax.annotate(f"{row['Project Name']} ({row['County']})",
@@ -243,7 +364,7 @@ def plot_submission_timeline():
                     fontsize=9,
                     va='center',
                     ha='left')
-
+    '''
     # Format the plot
     ax.set_yticks(y_positions[::5])  # Show every 5th tick to avoid crowding
     ax.set_ylabel('Cumulative Number of Projects', fontsize=12, fontweight='bold')
@@ -296,6 +417,8 @@ def plot_submission_timeline():
     folder = "visualizations"
     os.makedirs(folder, exist_ok=True)
     plt.savefig(os.path.join(folder, "data_center_data_center_timeline_matplotlib.png"), dpi=300, bbox_inches='tight')
+
+
 
 def plot_water_consumption_histogram():
     # Load your data
@@ -552,3 +675,5 @@ plot_submission_timeline()
 plot_water_consumption_histogram()
 
 plot_water_consumption_log_histogram()
+
+plot_monthly_submission_timeline()
