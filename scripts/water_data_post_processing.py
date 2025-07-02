@@ -10,8 +10,8 @@ import re
 #data_center_df = pd.DataFrame(columns = ["Current Status", "Contains 'data center'?", "Water Usage", "Data Center?"], index = water_data_df.index)
 def water_data_post_processing():
     script_dir = Path(__file__).resolve().parent
-    dri_data_path = script_dir.parent / "Data" / "dri_data.csv"
-    dri_post_processing_path = script_dir.parent / "Data" / "dri_post_processing.csv"
+    dri_data_path = script_dir.parent / "data" / "dri_data.csv"
+    dri_post_processing_path = script_dir.parent / "data" / "dri_post_processing.csv"
     water_data_df = pd.read_csv(dri_data_path, index_col = "DRI Number")
     #file_path = Path("../Data/dri_post_processing.csv")
     if dri_post_processing_path.exists() and dri_post_processing_path.is_file():
