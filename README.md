@@ -17,7 +17,7 @@ Visualized georgraphically with color indicating per-county data center water co
 But not all data center projects consume millions of gallons of water per day. Smaller data centers or large projects using less water-intensive cooling technologies can have low water demand.
 ![data_center_water_consumption_histogram_matplotlib](visualizations/data_center_water_consumption_histogram_matplotlib.png)
 
-
+![data_center_water_consumption_histogram_matplotlib](visualizations/data_center_water_consumption_log_histogram_matplotlib.png)
 ## Data Collection Details
 * The data above is obtained by weekly scrapes of the DRI submissions webpage
   - https://apps.dca.ga.gov/DRI/Submissions.aspx
