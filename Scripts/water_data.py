@@ -103,7 +103,7 @@ def crawler(urls, dri_table, driver):
     dri_table.index = dri_table.index.astype(int)
     #print(type(dri_table.index.to_list()[0]))
     script_dir = Path(__file__).resolve().parent
-    dri_data_path = script_dir.parent / "Data" / "dri_data.csv"
+    dri_data_path = script_dir.parent / "data" / "dri_data.csv"
     #file_path = Path("../Data/dri_data.csv")
     if dri_data_path.exists() and dri_data_path.is_file():
         try:

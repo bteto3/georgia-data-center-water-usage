@@ -5,10 +5,10 @@ DRI Number,Project Name,Water Usage,County,Initial Info Form Submision Date,Clea
 4493,North Oconee Industrial Park,No water data,Hall,6/9/2025,No water data,No water data,No water data,0.0,Withdrawn,TBD
 4492,North Oconee Industrial Park,No water data,Hall,6/9/2025,No water data,No water data,No water data,0.0,Withdrawn,TBD
 4491,East Hiawatha PUD,0.075 mgd,Candler,6/9/2025,0.075,0.075 mgd,0.075,0.0,Request for Comments Made,TBD
-4489,New Cold Storage Facility for PermaCold Logistics,0.0432 mgd,McIntosh,6/4/2025,0.0432,0.0432 mgd,0.0432,0.0,DRI Determination Made,TBD
+4489,New Cold Storage Facility for PermaCold Logistics,0.0432 mgd,McIntosh,6/4/2025,0.0432,0.0432 mgd,0.0432,0.0,Completed,TBD
 4488,New Cold Storage Facility for PermaCold Logistics,No water data,McIntosh,6/4/2025,No water data,No water data,No water data,0.0,Completed,TBD
 4487,SRM Concrete Ready Mix Plant,No water data,Henry,6/5/2025,No water data,No water data,No water data,0.0,DRI Determination Made,TBD
-4486,Grand Etowah - Bartow,1 million mgd at buildout,Bartow,6/3/2025,1 million,1 mgd at buildout,1,0.0,Certified Complete,TBD
+4486,Grand Etowah - Bartow,1 million mgd at buildout,Bartow,6/3/2025,1 million,1 mgd at buildout,1,0.0,Completed,TBD
 4485,Blue Heron Development,0.040,Chatham,6/2/2025,0.040,0.040,0.040,0.0,DRI Determination Made,TBD
 4483,Town Center at Mansa Park,No water data,Fulton,5/30/2025,No water data,No water data,No water data,0.0,DRI Determination Made,TBD
 4482,ATL 15 and 16,No water data,Clayton,5/30/2025,No water data,No water data,No water data,1.0,DRI Determination Made,TBD
@@ -29,7 +29,7 @@ DRI Number,Project Name,Water Usage,County,Initial Info Form Submision Date,Clea
 4459,BPG Logistics Park,0.10 mgd,Gordon,4/22/2025,0.10,0.08 mgd,0.08,0.0,Completed,TBD
 4458,High Falls Logistics Park,0.050,Spalding,4/17/2025,0.050,0.050,0.050,0.0,Completed,TBD
 4457,Macon Park N Store 5 LLC,"less than 1,000 gallons per month",Bibb,4/16/2025,"less than 1,000 gallons per month",<1000 gallons per month,<1000 gallons per month,0.0,Completed,TBD
-4456,Project Rockforge,No water data,Rockdale,4/14/2025,No water data,No water data,No water data,0.0,DRI Determination Made,TBD
+4456,Project Rockforge,.1248 gpd,Rockdale,4/14/2025,.1248 gpd,.06241 mgd,.06241,0.0,Additional Form Submitted,TBD
 4454,Thomas Concrete,0.013 mgd,Bartow,4/15/2025,0.013,unknown,unknown,0.0,Completed,TBD
 4453,Transfer Station - ABC Waste,100 gpd (0.0001 mgd),Chatham,4/11/2025,100 gpd (0.0001,100 gpd (0.0001 gpd),100 gpd (0.0001 gpd),0.0,Completed,TBD
 4451,Avemore,tbd,Carroll,4/11/2025,tbd,tbd,tbd,0.0,Completed,TBD
@@ -41,7 +41,7 @@ DRI Number,Project Name,Water Usage,County,Initial Info Form Submision Date,Clea
 4438,Hwy 278 Material Storage,300 gallons per day,Walton,4/3/2025,300 gallons per day,No water data,No water data,0.0,Completed,TBD
 4434,MADISON FARMS INDUSTRIAL CENTER,0.034 mgd,Morgan,4/1/2025,0.034,0.034 mgd,0.034,0.0,Completed,TBD
 4433,Project Bunkhouse,No water data,Bartow,3/31/2025,No water data,No water data,No water data,1.0,Completed,TBD
-4431,356 University,No water data,Fulton,3/31/2025,No water data,No water data,No water data,0.0,DRI Determination Made,TBD
+4431,356 University,0.146 mgd,Fulton,3/31/2025,0.146,0.146 mgd,0.146,0.0,Additional Form Submitted,TBD
 4430,Sylvan Mixed Use,No water data,Fulton,3/27/2025,No water data,No water data,No water data,0.0,DRI Determination Made,TBD
 4428,Gregory Road Data Center,±1.08 mgd,Newton,3/27/2025,±1.08,±0.360 gpd after evaporation,±0.360 gpd after evaporation,1.0,Completed,TBD
 4427,Everhour Phase 2 Residential Development,No water data,Coweta,3/25/2025,No water data,No water data,No water data,0.0,DRI Determination Made,TBD
@@ -49,7 +49,7 @@ DRI Number,Project Name,Water Usage,County,Initial Info Form Submision Date,Clea
 4425,Project Spalding,0.0165,Spalding,3/28/2025,0.0165,0.005,0.005,1.0,Completed,TBD
 4424,McDonough Civic Complex,No water data,Henry,3/20/2025,No water data,No water data,No water data,0.0,DRI Determination Made,TBD
 4423,Project 34,"0.01 mgd (10,000 gallons/day)",Coweta,3/18/2025,0.01,0.004 mgd,0.004,0.0,DRI Determination Made,TBD
-4422,Hickman Property,No water data,Douglas,3/14/2025,No water data,No water data,No water data,1.0,DRI Determination Made,TBD
+4422,Hickman Property,0.1 mgd,Douglas,3/14/2025,0.1,0.09 mgd,0.09,1.0,Additional Form Submitted,TBD
 4421,McLendon Tract PUD,0.45 mgd,Chatham,3/13/2025,0.45,0.45 mgd,0.45,0.0,Completed,TBD
 4420,Racetrac Extended Diesel Offer,0.00222 mgd,Jackson,3/12/2025,0.00222,0.0018 mgd,0.0018,0.0,Completed,TBD
 4416,Short Road Mixed Use,No water data,Fulton,3/10/2025,No water data,No water data,No water data,0.0,Withdrawn,TBD
@@ -81,14 +81,14 @@ DRI Number,Project Name,Water Usage,County,Initial Info Form Submision Date,Clea
 4375,Hwy-9 Tract,No water data,Dawson,1/15/2025,No water data,No water data,No water data,0.0,Initial Form Submitted,TBD
 4374,Central Coweta Industrial Phase II,0.028 mgd,Coweta,1/15/2025,0.028,0.028 mgd,0.028,1.0,DRI Determination Made,TBD
 4372,Cottages at Lake Oconee,"0.059 mgd (59,466 gpd average)",Putnam,1/13/2025,0.059,"0.054 mgd (54,060 gpd average)",0.054,0.0,Completed,TBD
-4371,Cascade Palmetto Highway & Ridge Road,No water data,Fulton,1/13/2025,No water data,No water data,No water data,0.0,DRI Determination Made,TBD
+4371,Cascade Palmetto Highway & Ridge Road,0.35 gpd,Fulton,1/13/2025,0.35 gpd,"292,800 gpd","292,800 gpd",0.0,Additional Form Submitted,TBD
 4370,TD Jakes - Fort Mac Village One,No water data,Fulton,1/14/2025,No water data,No water data,No water data,0.0,DRI Determination Made,TBD
 4369,The Bluffs at Darien,0.038,McIntosh,1/10/2025,0.038,0.018,0.018,0.0,Completed,TBD
 4367,981 Howell Mill Road Mixed-Use Development,0.32 mgd/ day,Fulton,1/9/2025,0.32,0.29 mgd/ day,0.29,0.0,Certified Complete,TBD
 4365,Panola Park,0.20,DeKalb,1/6/2025,0.20,0.16,0.16,0.0,Additional Form Submitted,TBD
 4364,Tates Landing Surface Mine,"41,700",Glynn,1/6/2025,"41,700","41,700","41,700",0.0,Completed,TBD
 4363,Golden Isles Speedway Surface Mine,na,Glynn,1/3/2025,na,na,na,0.0,Completed,TBD
-4362,Huber West Midtown,No water data,Fulton,1/2/2025,No water data,No water data,No water data,0.0,DRI Determination Made,TBD
+4362,Huber West Midtown,0.2 mgd,Fulton,1/2/2025,0.2,0.2 mgd,0.2,0.0,Additional Form Submitted,TBD
 4361,Project Sail,9.1,Coweta,12/31/2024,9.1,3.03,3.03,1.0,Completed,TBD
 4360,Lotus Grove,0.124 mgd,DeKalb,12/30/2024,0.124,0.124 mgd,0.124,0.0,Completed,TBD
 4359,The Crossing at Flowery Branch,0.13 mgd,Hall,12/26/2024,0.13,0.10 mgd,0.10,0.0,Completed,TBD
@@ -2998,5 +2998,10 @@ DRI Number,Project Name,Water Usage,County,Initial Info Form Submision Date,Clea
 44,Sandtown Center,.059500,Fulton,7/17/2001,.059500,.068425,.068425,0.0,Completed,TBD
 43,Cherokee County Airport,,Cherokee,7/17/2001,,,,0.0,Completed,TBD
 42,Midtown Park,0.5 mgd,Fulton,7/9/2001,0.5,0.5 mgd,0.5,0.0,Completed,TBD
-4500,Exley Tract 7eleven,,,,,,,,,
-4499,Thomas Concrete Liberty Plant,,,,,,,,,
+4500,Exley Tract 7eleven,,,,,,,,DRI Determination Made,
+4499,Thomas Concrete Liberty Plant,,,,,,,,DRI Determination Made,
+4507,Center Hill Quarry,,,,,,,,,
+4506,1611 Ellsworth,,,,,,,,,
+4505,Waterford Subdivision,,,,,,,,,
+4503,Esplanade,,,,,,,,,
+4502,1900 Level Grove Road Townhome Development,,,,,,,,,
