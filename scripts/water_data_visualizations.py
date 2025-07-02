@@ -331,7 +331,8 @@ def plot_water_consumption_histogram():
     #plt.xticks(xticks)
     plt.xlabel("Water Consumption (mgd)", fontsize=12, fontweight="bold")
     plt.ylabel("Number of Projects", fontsize=12, fontweight="bold")
-    plt.title("Distribution of Water Consumption per Project", fontsize=14, fontweight="bold")
+    plt.title("Distribution of Water Consumption", fontsize=14, fontweight="bold")
+    #Distribution of Water Consumption per Project
     plt.grid(True, axis='y', linestyle="--", alpha=0.4)
 
     # Save to file
@@ -368,7 +369,7 @@ def plot_water_consumption_log_histogram():
     plt.xscale('log')  # Set X-axis to log scale
     plt.xlabel("Water Consumption (mgd, log scale)", fontsize=12, fontweight="bold")
     plt.ylabel("Number of Projects", fontsize=12, fontweight="bold")
-    plt.title("Histogram of Water Consumption (Logarithmic X-Axis)", fontsize=14, fontweight="bold")
+    plt.title("Distribution of Water Consumption (Logarithmic X-Axis)", fontsize=14, fontweight="bold")
     plt.grid(True, axis='both', which='both', linestyle='--', alpha=0.3)
 
     #plt.tight_layout()
