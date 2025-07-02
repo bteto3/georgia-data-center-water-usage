@@ -146,7 +146,8 @@ def plot_stacked_bar_by_county():
     df["Water Consumption/Loss"] = pd.to_numeric(df["Water Consumption/Loss"], errors="coerce")
     #df["Water Consumption/Loss"] = df["Water Consumption/Loss"].fillna(0)
     df = df.dropna(subset=["Water Consumption/Loss"])
-
+    df = df[df["Water Consumption/Loss"] > -0.0001]
+    #data = data[data > 0]
     # Aggregate total water consumption per county to get sorting order
     county_totals = df.groupby("County")["Water Consumption/Loss"].sum().sort_values(ascending=False)
     sorted_counties = county_totals.index.tolist()
@@ -178,21 +179,35 @@ def plot_stacked_bar_by_county():
         counties_str = ", ".join(counties)
         ax.bar(pivot.index, values, bottom=bottom, label=f"{project} ({counties_str})")
         bottom += values
+    
+    handles, labels = ax.get_legend_handles_labels()
+    sorted_items = sorted(zip(labels, handles), key=lambda x: extract_county(x[0]))
+    sorted_labels, sorted_handles = zip(*sorted_items)
 
 
     # Formatting
     ax.set_xticklabels(pivot.index, rotation=90)
     ax.set_ylabel("Water Consumption (mgd)")
     ax.set_title("Water Consumption by County and Data Center Project")
-    ax.legend(title="Project Names", bbox_to_anchor=(1.05, 1), loc='upper left')
+    ax.legend(sorted_handles, sorted_labels, title="Project Names", bbox_to_anchor=(1.05, 1), loc='upper left')
+    total_projects = len(df)
     plt.setp(ax.xaxis.get_majorticklabels(), rotation=45, ha='right', fontsize=10)
+    #plt.figtext(0.5, 0.02, f'Total Projects: {total_projects}',ha='center', fontsize=10, style='italic')
     #plt.tight_layout()
     #plt.show()
     folder = "visualizations"
     os.makedirs(folder, exist_ok=True)
     plt.savefig(os.path.join(folder, "data_center_water_data_bar_chart_matplotlib.png"), dpi=300, bbox_inches='tight')
 
-def plot_monthly_submission_timeline():
+# Sort legend labels alphabetically by county (extracted from "Project Name (County)")
+def extract_county(label):
+    try:
+        return label.split("(")[-1].rstrip(")").strip()
+    except IndexError:
+        return ""
+
+
+def plot_quarterly_submission_timeline():
     script_dir = Path(__file__).resolve().parent
     data_center_path = script_dir.parent / "data" / "data_center.csv"
     df = pd.read_csv(data_center_path)
@@ -676,4 +691,4 @@ plot_water_consumption_histogram()
 
 plot_water_consumption_log_histogram()
 
-plot_monthly_submission_timeline()
+plot_quarterly_submission_timeline()
