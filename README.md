@@ -5,7 +5,7 @@ This repo collects and visualizes the water consumption of publicly available da
 Data centers primarily use water for cooling, and the amount used depends on the cooling technologies used. The plots below highlight the rapid increase in data center developments and their consumptive water loss across projects and location.
 
 Data centers are rapidly being developed. Most of the identified data center DRIs have been proposed in the past 18 months.
-![data_center_data_center_timeline_matplotlib](visualizations/data_center_data_center_timeline_matplotlib.png)
+![data_center_data_center_timeline_matplotlib](visualizations/quarterly_data_center_submissions.png)
 
 
 Data center projects can consume millions of gallons of water a day. The below bar chart shows individual project's water consumption grouped by county.
